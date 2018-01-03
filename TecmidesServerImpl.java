@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jws.WebService;
+import tecmides.domain.Rule;
 import tecmides.tool.association.AprioriAssociation;
 import tecmides.tool.attributeSelection.CsfSelection;
 import tecmides.tool.classification.J48Classification;
@@ -30,100 +31,89 @@ public class TecmidesServerImpl implements TecmidesServer {
         PrintWriter writer;
         try {
             String arffPath = System.getProperty("java.io.tmpdir") + "tecmides.arff";
-            
+
             writer = new PrintWriter(arffPath, "UTF-8");
             writer.println(ARFFString);
             writer.close();
-            
+
             BufferedReader reader = new BufferedReader(new FileReader(arffPath));
             Instances data = new Instances(reader);
             reader.close();
-            
-            return generateJSON(data);
-            
+
+            List<Rule> assignRules = assign_start_mining(data);
+            List<Rule> forumRules = forum_start_mining(data);
+            List<Rule> resourceRules = resource_start_mining(data);
+
+            Gson gson = new Gson();
+
+            // Creates the map for the inner level
+            Map<String, String> rules = new HashMap<>();
+            rules.put("assign", gson.toJson(assignRules));
+            rules.put("forum", gson.toJson(forumRules));
+            rules.put("resource", gson.toJson(resourceRules));
+
+            // Creates the parent map for the inner level
+            Map<String, String> output = new HashMap<>();
+            output.put("rules", gson.toJson(rules));
+
+            return gson.toJson(output);
+
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
+
+            return "An unexpected error occured!";
+
         } catch (IOException ex) {
             Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return "";
-    }
-    
-    private static String generateJSON(Instances data) {
-        Gson gson = new Gson();
-            
-        List<String> assignRules = assign_start_mining(data);
-        List<String> forumRules = forum_start_mining(data);
-        List<String> resourceRules = resource_start_mining(data);
-        
-        // Creates the map for the inner level
-        Map<String, String> rules = new HashMap<>();
-        rules.put("assign", gson.toJson(assignRules));
-        rules.put("forum", gson.toJson(forumRules));
-        rules.put("resource", gson.toJson(resourceRules));
-        
-        // Creates the parent map for the inner level
-        Map<String, String> output = new HashMap<>();
-        output.put("rules", gson.toJson(rules));
-        
-        return gson.toJson(output);
-    }
-    
-    private static List<String> assign_start_mining(Instances data) {
-        List<String> rules = new ArrayList<>();
 
-        try {
-            rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_INDIV_ASSIGN_LTSUBMIT));
+            return "An unexpected error occured!";
 
-            rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_GROUP_ASSIGN_LTSUBMIT));
-
-            rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_INDIV_SUBJECT_DIFF));
-                        
-            // Regras encontradas. Filtrar pelas melhores.
-            // 1.1 lift e convicção
-            // Regras que contenham desânimo
-            
         } catch (Exception ex) {
             Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
-        return rules;
+            return "An unexpected error occured!";
+        }
     }
 
-    private static List<String> associate_by_attribute_mining(Instances data, MiningAttribute index) throws Exception {
+    private static List<Rule> assign_start_mining(Instances data) throws Exception {
+        List<Rule> rules = new ArrayList<>();
+
+        rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_INDIV_ASSIGN_LTSUBMIT));
+        rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_GROUP_ASSIGN_LTSUBMIT));
+        rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_INDIV_SUBJECT_DIFF));
+
+        List<Rule> filteredRules = AprioriAssociation.filterByMinConviction(AprioriAssociation.filterByMinLift(rules, 1.1), 1.1);
+
+        // TODO: apenas regras que contenham desânimo
+        return filteredRules;
+    }
+
+    private static List<Rule> associate_by_attribute_mining(Instances data, MiningAttribute index) throws Exception {
         data.setClassIndex(index.ordinal());
 
         Instances filteredData = new CsfSelection().select(data);
 
-        return new AprioriAssociation(filteredData).associate(10);
-    }
+        List<Rule> rules = new AprioriAssociation(filteredData).associate(10);
 
-    private static List<String> forum_start_mining(Instances data) {
-        List<String> rules = new ArrayList<>();
-        
-        try {
-            Instances preparedData = forum_prepare_data(data);
-            
-            J48Classification classificator = new J48Classification(preparedData);
-            classificator.train();
-            
-            // System.out.println(classificator.tree());
-            // Extrair a árvore
-            
-            rules.addAll(new AprioriAssociation(preparedData).associate(20));
-            
-            // Regras encontradas. Filtrar pelas melhores.
-            // 1.1 lift e convicção
-            // Regras que contenham desânimo
-            
-        } catch (Exception ex) {
-            Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
         return rules;
     }
-    
+
+    private static List<Rule> forum_start_mining(Instances data) throws Exception {
+        Instances preparedData = forum_prepare_data(data);
+
+        J48Classification classificator = new J48Classification(preparedData);
+        classificator.train();
+
+        // System.out.println(classificator.tree());
+        // TODO: Extrair a árvore
+        List<Rule> rules = new AprioriAssociation(preparedData).associate(20);
+
+        List<Rule> filteredRules = AprioriAssociation.filterByMinConviction(AprioriAssociation.filterByMinLift(rules, 1.1), 1.1);
+
+        // TODO: apenas regras que contenham desânimo
+        return filteredRules;
+    }
+
     private static Instances forum_prepare_data(Instances data) throws Exception {
         // Removal of not interesting attributes
         Remove remove = new Remove();
@@ -133,27 +123,20 @@ public class TecmidesServerImpl implements TecmidesServer {
 
         // '-4' beacuse of the number of attributes removed before the index
         filteredData.setClassIndex(MiningAttribute.ST_GROUP_ASSIGN_LTSUBMIT.ordinal() - 4);
-        
+
         return filteredData;
     }
-    
-    private static List<String> resource_start_mining(Instances data) {
-        List<String> rules = new ArrayList<>();
 
-        try {
-            rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_INDIV_ASSIGN_LTSUBMIT));
-            
-            rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_INDIV_SUBJECT_DIFF));
+    private static List<Rule> resource_start_mining(Instances data) throws Exception {
+        List<Rule> rules = new ArrayList<>();
 
-            // Regras encontradas. Filtrar pelas melhores.
-            // 1.1 lift e convicção
-            // Regras que contenham desânimo
-            
-        } catch (Exception ex) {
-            Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_INDIV_ASSIGN_LTSUBMIT));
+        rules.addAll(associate_by_attribute_mining(data, MiningAttribute.ST_INDIV_SUBJECT_DIFF));
 
-        return rules;
+        List<Rule> filteredRules = AprioriAssociation.filterByMinConviction(AprioriAssociation.filterByMinLift(rules, 1.1), 1.1);
+
+        // TODO: apenas regras que contenham desânimo
+        return filteredRules;
     }
-    
+
 }

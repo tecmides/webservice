@@ -1,6 +1,7 @@
 package tecmides.tool.association;
 
 import java.util.List;
+import tecmides.domain.Rule;
 
 /**
  *
@@ -8,6 +9,6 @@ import java.util.List;
  */
 public interface AssociationTool {
     
-    public List<String> associate(int numRules) throws Exception;
+    public List<Rule> associate(int numRules) throws Exception;
     
 }
