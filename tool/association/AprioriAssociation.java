@@ -5,29 +5,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import tecmides.domain.MiningAttribute;
+import tecmides.domain.Operand;
 import tecmides.domain.Rule;
 import weka.core.Instances;
 
 public class AprioriAssociation implements AssociationTool {
 
-    private final Instances data;
-    private List<Rule> rules;
-
-    public AprioriAssociation(Instances data) {
-        this.data = data;
-        this.rules = new ArrayList<>();
-    }
-
-    /**
-     * @return the rules
-     */
-    public List<Rule> getRules() {
-        return this.rules;
-    }
-
     /**
      * Generate the association rules
      *
+     * @param instances
      * @param numRules the max number of rules to be generated
      *
      * @return String Output of the algorithm, consisting of rules
@@ -35,7 +23,7 @@ public class AprioriAssociation implements AssociationTool {
      * @throws java.lang.Exception
      */
     @Override
-    public List<Rule> associate(int numRules) throws Exception {
+    public List<Rule> run(Instances instances, int numRules) throws Exception {
         weka.associations.Apriori associator = new weka.associations.Apriori();
 
         String[] options = new String[4];
@@ -46,14 +34,14 @@ public class AprioriAssociation implements AssociationTool {
 
         associator.setOptions(options);
         associator.setNumRules(10);
-        associator.setClassIndex(this.data.classIndex());
-        associator.buildAssociations(this.data);
+        associator.setClassIndex(instances.classIndex());
+        associator.buildAssociations(instances);
 
         List<String> strRules = this.findRules(associator.toString());
 
-        this.rules = this.parseRules(strRules);
+        List<Rule> rules = this.parseRules(strRules);
 
-        return this.rules;
+        return rules;
     }
 
     private List<String> findRules(String rulesText) {
@@ -70,16 +58,17 @@ public class AprioriAssociation implements AssociationTool {
         return strRules;
     }
 
-    private List<Rule> parseRules(List<String> strRules) {
+    private List<Rule> parseRules(List<String> strRules) throws Exception {
+        List<Rule> rules = new ArrayList<>();
         Iterator<String> itrStrRules = strRules.iterator();
 
         while (itrStrRules.hasNext()) {
             String strRule = itrStrRules.next();
-
-            this.rules.add(new Rule(strRule));
+            
+            rules.add(new Rule(strRule));
         }
 
-        return this.rules;
+        return rules;
     }
 
     public static List<Rule> filterByMinLift(List<Rule> rules, double minLift) {
@@ -108,6 +97,42 @@ public class AprioriAssociation implements AssociationTool {
 
             if (rule.getConviction() >= minConviction) {
                 filteredRules.add(rule);
+            }
+        }
+
+        return filteredRules;
+        
+    }
+
+    public static List<Rule> filterByAttributeValue(List<Rule> rules, MiningAttribute attribute, String value) {
+        List<Rule> filteredRules = new ArrayList<>();
+
+        Iterator<Rule> itrRules = rules.iterator();
+
+        while (itrRules.hasNext()) {
+            Rule rule = itrRules.next();
+            boolean found = false;
+
+            Iterator<Operand> itrAntecedent = rule.getAntecedent().iterator();
+            Iterator<Operand> itrConsequent = rule.getConsequent().iterator();
+
+            while (itrAntecedent.hasNext()) {
+                Operand operand = itrAntecedent.next();
+
+                if (operand.getName().equalsIgnoreCase(attribute.name()) && operand.getValue().equalsIgnoreCase(value)) {
+                    filteredRules.add(rule);
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                while (itrConsequent.hasNext()) {
+                    Operand operand = itrConsequent.next();
+
+                    if (operand.getName().equalsIgnoreCase(attribute.name()) && operand.getValue().equalsIgnoreCase(value)) {
+                        filteredRules.add(rule);
+                    }
+                }
             }
         }
 

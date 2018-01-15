@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package tecmides.tool.attributeSelection;
+package tecmides.tool.attrSelection.algorithm;
 
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
@@ -11,14 +6,12 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
 
-/**
- *
- * @author Bosista
- */
-public class CsfSelection implements AttributeSelectionTool {
+public class CsfSelection implements AttrSelectionAlgorithmTool {
 
     @Override
-    public Instances select(Instances data) throws Exception {
+    public Instances run(Instances instances, int classIndex) throws Exception {
+        instances.setClassIndex(classIndex);
+
         AttributeSelection filter = new AttributeSelection();
         
         CfsSubsetEval evaluator = new CfsSubsetEval();
@@ -27,9 +20,9 @@ public class CsfSelection implements AttributeSelectionTool {
         BestFirst search = new BestFirst();
         filter.setSearch(search);
 
-        filter.setInputFormat(data);
+        filter.setInputFormat(instances);
         
-        return Filter.useFilter(data, filter);
+        return Filter.useFilter(instances, filter);
     }
     
 }

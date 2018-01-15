@@ -7,13 +7,13 @@ import java.util.regex.Pattern;
 
 public class Rule {
 
-    private final List<String> antecedent;
-    private final List<String> consequent;
+    private final List<Operand> antecedent;
+    private final List<Operand> consequent;
     private double confidence;
     private double lift;
     private double conviction;
 
-    public Rule(String strRule) {
+    public Rule(String strRule) throws Exception {
         strRule = strRule.trim();
 
         this.antecedent = new ArrayList<>();
@@ -23,8 +23,8 @@ public class Rule {
         this.parseProperties(strRule);
     }
 
-    private void parseOperands(String strRule) {
-        Matcher descriptionMatcher = Pattern.compile("(([a-z_]+=[0-5])) |(==> )").matcher(strRule);
+    private void parseOperands(String strRule) throws Exception {
+        Matcher descriptionMatcher = Pattern.compile("(([a-z_]+=[0-5])|([a-z_]+=[A-F])) |(==> )").matcher(strRule);
         boolean isAntecedent = true;
 
         while (descriptionMatcher.find()) {
@@ -33,10 +33,12 @@ public class Rule {
             if (match.equals("==>")) {
                 isAntecedent = false;
             } else {
+                Operand operand = new Operand(match);
+                
                 if (isAntecedent) {
-                    this.antecedent.add(match);
+                    this.antecedent.add(operand);
                 } else {
-                    this.consequent.add(match);
+                    this.consequent.add(operand);
                 }
             }
 
@@ -82,15 +84,19 @@ public class Rule {
     /**
      * @return the antecedente
      */
-    public List<String> getAntecedent() {
+    public List<Operand> getAntecedent() {
         return antecedent;
     }
 
     /**
      * @return the consequent
      */
-    public List<String> getConsequent() {
+    public List<Operand> getConsequent() {
         return consequent;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s => %s, conf: %f, lift: %f, conv: %f", this.antecedent.toString(), this.consequent.toString(), this.confidence, this.lift, this.conviction);
+    }
 }

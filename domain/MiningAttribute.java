@@ -1,4 +1,4 @@
-package tecmides;
+package tecmides.domain;
 
 public enum MiningAttribute {
     GRADE,
