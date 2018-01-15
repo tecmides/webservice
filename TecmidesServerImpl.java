@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,26 +28,16 @@ public class TecmidesServerImpl implements TecmidesServer {
 
     @Override
     public String generateRules(String ARFFString) {
-        String defaultResponse = "{\"assign\":[],\"forum\":[],\"resource\":[]}";
+        List<Rule> rules = new ArrayList<>();
 
         try {
             Instances instances = getInstances(ARFFString);
 
             AssociationTool associator = new AprioriAssociation();
 
-            List<Rule> assignRules = new AssignModuleRuleMining().run(instances, associator);
-            List<Rule> forumRules = new ForumModuleRuleMining().run(instances, associator);
-            List<Rule> resourceRules = new ResourceModuleRuleMining().run(instances, associator);
-
-            Gson gson = new Gson();
-
-            // Creates the map for the inner level
-            Map<String, String> rules = new HashMap<>();
-            rules.put("assign", gson.toJson(assignRules));
-            rules.put("forum", gson.toJson(forumRules));
-            rules.put("resource", gson.toJson(resourceRules));
-
-            return gson.toJson(rules);
+            rules.addAll(new AssignModuleRuleMining().run(instances, associator));
+            rules.addAll(new ForumModuleRuleMining().run(instances, associator));
+            rules.addAll(new ResourceModuleRuleMining().run(instances, associator));
 
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -56,7 +47,7 @@ public class TecmidesServerImpl implements TecmidesServer {
             Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return defaultResponse;
+        return new Gson().toJson(rules);
     }
     
     private static Instances getInstances(String ARFFString) throws FileNotFoundException, IOException, Exception {
