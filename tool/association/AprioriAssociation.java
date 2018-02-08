@@ -23,7 +23,7 @@ public class AprioriAssociation implements AssociationTool {
      * @throws java.lang.Exception
      */
     @Override
-    public List<Rule> run(Instances instances, int numRules) throws Exception {
+    public List<Rule> associate(Instances instances, int numRules) throws Exception {
         weka.associations.Apriori associator = new weka.associations.Apriori();
 
         String[] options = new String[4];

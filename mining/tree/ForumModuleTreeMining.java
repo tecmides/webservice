@@ -13,10 +13,10 @@ public class ForumModuleTreeMining implements ModuleTreeMining {
         AttrSelectionTool attrSelector = new GeneralSelection();
 
         // '-4' beacuse of the number of attributes removed before the index
-        Instances preparedInstances = attrSelector.run(instances, "2,3,7,8,10,11", MiningAttribute.ST_GROUP_ASSIGN_LTSUBMIT.ordinal() - 4);
+        Instances preparedInstances = attrSelector.select(instances, "2,3,7,8,10,11", MiningAttribute.ST_GROUP_ASSIGN_LTSUBMIT.ordinal() - 4);
         
         // TODO: Extrair a árvore para um formato navegável */
-        return classificator.run(preparedInstances);
+        return classificator.classify(preparedInstances);
     }
 
 }

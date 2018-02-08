@@ -4,6 +4,6 @@ import weka.core.Instances;
 
 public interface ClassificationTool {
     
-    public String run(Instances instances) throws Exception;
+    public String classify(Instances instances) throws Exception;
     
 }

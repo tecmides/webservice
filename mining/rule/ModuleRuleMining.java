@@ -7,5 +7,5 @@ import weka.core.Instances;
 
 public interface ModuleRuleMining {
     
-    public List<Rule> run(Instances instances, AssociationTool associator) throws Exception;
+    public List<Rule> mine(Instances instances, AssociationTool associator) throws Exception;
 }

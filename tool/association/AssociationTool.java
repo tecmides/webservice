@@ -10,6 +10,6 @@ import weka.core.Instances;
  */
 public interface AssociationTool {
     
-    public List<Rule> run(Instances instances, int numRules) throws Exception;
+    public List<Rule> associate(Instances instances, int numRules) throws Exception;
 
 }

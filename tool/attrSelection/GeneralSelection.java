@@ -7,7 +7,7 @@ import weka.filters.unsupervised.attribute.Remove;
 public class GeneralSelection implements AttrSelectionTool {
 
     @Override
-    public Instances run(Instances instances, String attrIndexes, int classIndex) throws Exception {
+    public Instances select(Instances instances, String attrIndexes, int classIndex) throws Exception {
         Instances filteredData;
 
         if (attrIndexes.length() > 0) {

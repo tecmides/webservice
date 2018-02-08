@@ -12,7 +12,7 @@ import weka.core.Instances;
 public class J48Classification implements ClassificationTool {
 
     @Override
-    public String run(Instances instances) throws Exception {
+    public String classify(Instances instances) throws Exception {
         Classifier classifier = new J48();
         classifier.buildClassifier(instances);
         

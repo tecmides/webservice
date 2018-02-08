@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jws.WebService;
@@ -35,9 +33,9 @@ public class TecmidesServerImpl implements TecmidesServer {
 
             AssociationTool associator = new AprioriAssociation();
 
-            rules.addAll(new AssignModuleRuleMining().run(instances, associator));
-            rules.addAll(new ForumModuleRuleMining().run(instances, associator));
-            rules.addAll(new ResourceModuleRuleMining().run(instances, associator));
+            rules.addAll(new AssignModuleRuleMining().mine(instances, associator));
+            rules.addAll(new ForumModuleRuleMining().mine(instances, associator));
+            rules.addAll(new ResourceModuleRuleMining().mine(instances, associator));
 
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
