@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import tecmides.domain.MiningAttribute;
 import tecmides.domain.Operand;
 import tecmides.domain.Rule;
 import weka.core.Instances;
@@ -69,74 +68,6 @@ public class AprioriAssociation implements AssociationTool {
         }
 
         return rules;
-    }
-
-    public static List<Rule> filterByMinLift(List<Rule> rules, double minLift) {
-        List<Rule> filteredRules = new ArrayList<>();
-
-        Iterator<Rule> itrRules = rules.iterator();
-
-        while (itrRules.hasNext()) {
-            Rule rule = itrRules.next();
-
-            if (rule.getLift() >= minLift) {
-                filteredRules.add(rule);
-            }
-        }
-
-        return filteredRules;
-    }
-
-    public static List<Rule> filterByMinConviction(List<Rule> rules, double minConviction) {
-        List<Rule> filteredRules = new ArrayList<>();
-
-        Iterator<Rule> itrRules = rules.iterator();
-
-        while (itrRules.hasNext()) {
-            Rule rule = itrRules.next();
-
-            if (rule.getConviction() >= minConviction) {
-                filteredRules.add(rule);
-            }
-        }
-
-        return filteredRules;
-        
-    }
-
-    public static List<Rule> filterByAttributeValue(List<Rule> rules, MiningAttribute attribute, String value) {
-        List<Rule> filteredRules = new ArrayList<>();
-
-        Iterator<Rule> itrRules = rules.iterator();
-
-        while (itrRules.hasNext()) {
-            Rule rule = itrRules.next();
-            boolean found = false;
-
-            Iterator<Operand> itrAntecedent = rule.getAntecedent().iterator();
-            Iterator<Operand> itrConsequent = rule.getConsequent().iterator();
-
-            while (itrAntecedent.hasNext()) {
-                Operand operand = itrAntecedent.next();
-
-                if (operand.getName().equalsIgnoreCase(attribute.name()) && operand.getValue().equalsIgnoreCase(value)) {
-                    filteredRules.add(rule);
-                    found = true;
-                }
-            }
-
-            if (!found) {
-                while (itrConsequent.hasNext()) {
-                    Operand operand = itrConsequent.next();
-
-                    if (operand.getName().equalsIgnoreCase(attribute.name()) && operand.getValue().equalsIgnoreCase(value)) {
-                        filteredRules.add(rule);
-                    }
-                }
-            }
-        }
-
-        return filteredRules;
     }
 
 }

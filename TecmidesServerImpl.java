@@ -1,15 +1,14 @@
 package tecmides;
 
-import tecmides.mining.rule.ResourceModuleRuleMining;
-import tecmides.mining.rule.AssignModuleRuleMining;
-import tecmides.mining.rule.ForumModuleRuleMining;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,6 +17,10 @@ import javax.jws.WebService;
 import tecmides.domain.Rule;
 import tecmides.tool.association.AprioriAssociation;
 import tecmides.tool.association.AssociationTool;
+import tecmides.tool.attrSelection.algorithm.AttrSelectionAlgorithmTool;
+import tecmides.tool.attrSelection.algorithm.CsfSelection;
+import tecmides.tool.filter.RuleFilter;
+import tecmides.tool.filter.RuleFilterImpl;
 
 import weka.core.Instances;
 
@@ -25,17 +28,16 @@ import weka.core.Instances;
 public class TecmidesServerImpl implements TecmidesServer {
 
     @Override
-    public String generateRules(String ARFFString) {
+    public List<Rule> generateRules(String ARFFString, int idxClassAttribute, int numRules) {
         List<Rule> rules = new ArrayList<>();
 
         try {
-            Instances instances = getInstances(ARFFString);
-
+            Instances instances = getInstances(ARFFString, idxClassAttribute);
             AssociationTool associator = new AprioriAssociation();
 
-            rules.addAll(new AssignModuleRuleMining().mine(instances, associator));
-            rules.addAll(new ForumModuleRuleMining().mine(instances, associator));
-            rules.addAll(new ResourceModuleRuleMining().mine(instances, associator));
+            rules.addAll(associator.associate(instances, numRules));
+
+            rules = filter(rules);
 
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -45,12 +47,36 @@ public class TecmidesServerImpl implements TecmidesServer {
             Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return new Gson().toJson(rules);
+        return rules;
     }
-    
-    private static Instances getInstances(String ARFFString) throws FileNotFoundException, IOException, Exception {
+
+    @Override
+    public List<Rule> generateRulesByAttrRelativity(String ARFFString, int idxClassAttr, int numRules) {
+        List<Rule> rules = new ArrayList<>();
+
+        try {
+            Instances instances = getInstances(ARFFString, idxClassAttr);
+            AssociationTool associator = new AprioriAssociation();
+            AttrSelectionAlgorithmTool attrSelector = new CsfSelection();
+
+            rules.addAll(associator.associate(attrSelector.run(instances, idxClassAttr), numRules));
+
+            rules = filter(rules);
+
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(TecmidesServerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return rules;
+    }
+
+    private static Instances getInstances(String ARFFString, int idxClassAttr) throws FileNotFoundException, IOException, Exception {
         PrintWriter writer;
-        String arffPath = System.getProperty("java.io.tmpdir") + "tecmides.arff";
+        String arffPath = System.getProperty("java.io.tmpdir") + "tecmides" + System.currentTimeMillis() + ".arff";
 
         writer = new PrintWriter(arffPath, "UTF-8");
         writer.println(ARFFString);
@@ -59,13 +85,24 @@ public class TecmidesServerImpl implements TecmidesServer {
         Instances instances;
         try (BufferedReader reader = new BufferedReader(new FileReader(arffPath))) {
             instances = new Instances(reader);
+
+            reader.close();
+            Files.deleteIfExists((new File(arffPath)).toPath());
         }
 
         if (instances.numInstances() <= 0) {
             throw new Exception("There are no instances!");
         }
-        
+
+        instances.setClassIndex(idxClassAttr);
+
         return instances;
+    }
+
+    private static List<Rule> filter(List<Rule> rules) throws Exception {
+        RuleFilter filter = new RuleFilterImpl();
+
+        return filter.filterByMinLift(filter.filterByMinConviction(rules, 1.1), 1.1);
     }
 
 }

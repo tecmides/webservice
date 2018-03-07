@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Rule {
 
     private final List<Operand> antecedent;
@@ -12,6 +17,15 @@ public class Rule {
     private double confidence;
     private double lift;
     private double conviction;
+
+    public Rule() {
+        this.antecedent = new ArrayList<>();
+        this.consequent = new ArrayList<>();
+        this.confidence = 0;
+        this.lift = 0;
+        this.conviction = 0;
+
+    }
 
     public Rule(String strRule) throws Exception {
         strRule = strRule.trim();
@@ -34,7 +48,7 @@ public class Rule {
                 isAntecedent = false;
             } else {
                 Operand operand = new Operand(match);
-                
+
                 if (isAntecedent) {
                     this.antecedent.add(operand);
                 } else {

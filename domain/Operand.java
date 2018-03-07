@@ -1,10 +1,21 @@
 package tecmides.domain;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Operand {
 
     private final String name;
     private final String value;
-
+    
+    public Operand() {
+        this.name = "";
+        this.value = "";
+    }
+    
     public Operand(String operand) throws Exception {
         String[] terms = operand.split("=");
         
