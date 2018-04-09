@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import tecmides.domain.Operand;
 import tecmides.domain.Rule;
 import weka.core.Instances;
 
