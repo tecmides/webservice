@@ -62,7 +62,7 @@ public class AprioriAssociation implements AssociationTool {
 
         while (itrStrRules.hasNext()) {
             String strRule = itrStrRules.next();
-            
+
             rules.add(new Rule(strRule));
         }
 

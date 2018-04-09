@@ -10,8 +10,8 @@ public class J48Classification implements ClassificationTool {
     public String classify(Instances instances) throws Exception {
         Classifier classifier = new J48();
         classifier.buildClassifier(instances);
-        
+
         return classifier.toString();
     }
-    
+
 }

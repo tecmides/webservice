@@ -10,23 +10,23 @@ public class Operand {
 
     private final String name;
     private final String value;
-    
+
     public Operand() {
         this.name = "";
         this.value = "";
     }
-    
+
     public Operand(String operand) throws Exception {
         String[] terms = operand.split("=");
-        
-        if( terms.length > 2 ) {
+
+        if (terms.length > 2) {
             throw new Exception("Operand is not in the right format");
         }
-        
+
         this.name = terms[0];
         this.value = terms[1];
     }
-    
+
     /**
      * @return the name
      */

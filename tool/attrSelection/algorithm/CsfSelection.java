@@ -13,16 +13,16 @@ public class CsfSelection implements AttrSelectionAlgorithmTool {
         instances.setClassIndex(classIndex);
 
         AttributeSelection filter = new AttributeSelection();
-        
+
         CfsSubsetEval evaluator = new CfsSubsetEval();
         filter.setEvaluator(evaluator);
-        
+
         BestFirst search = new BestFirst();
         filter.setSearch(search);
 
         filter.setInputFormat(instances);
-        
+
         return Filter.useFilter(instances, filter);
     }
-    
+
 }
