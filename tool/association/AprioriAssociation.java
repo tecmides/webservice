@@ -31,7 +31,7 @@ public class AprioriAssociation implements AssociationTool {
         options[3] = "0.7";
 
         associator.setOptions(options);
-        associator.setNumRules(10);
+        associator.setNumRules(numRules);
         associator.setClassIndex(instances.classIndex());
         associator.buildAssociations(instances);
 

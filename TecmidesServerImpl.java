@@ -75,7 +75,8 @@ public class TecmidesServerImpl implements TecmidesServer {
 
     private static Instances getInstances(String ARFFString, int idxClassAttr) throws FileNotFoundException, IOException, Exception {
         PrintWriter writer;
-        String arffPath = System.getProperty("java.io.tmpdir") + "tecmides" + System.currentTimeMillis() + ".arff";
+
+        String arffPath = System.getProperty("java.io.tmpdir") + "/tecmides" + System.currentTimeMillis() + ".arff";
 
         writer = new PrintWriter(arffPath, "UTF-8");
         writer.println(ARFFString);
