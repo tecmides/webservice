@@ -13,9 +13,9 @@ import tecmides.domain.Rule;
 public interface TecmidesServer {
 
     @WebMethod
-    List<Rule> generateRules(String ARFFString, int idxClassAttribute, int numRules);
+    List<Rule> generateRules(String ARFFString, int numRules, double minSupport, double minConfidence);
 
     @WebMethod
-    List<Rule> generateRulesByAttrRelativity(String ARFFString, int idxClassAttr, int numRules);
+    List<Rule> generateRulesByAttrRelativity(String ARFFString, int idxClassAttr, int numRules, double minSupport, double minConfidence);
 
 }

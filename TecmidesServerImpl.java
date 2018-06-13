@@ -27,14 +27,14 @@ import weka.core.Instances;
 public class TecmidesServerImpl implements TecmidesServer {
 
     @Override
-    public List<Rule> generateRules(String ARFFString, int idxClassAttribute, int numRules) {
+    public List<Rule> generateRules(String ARFFString, int numRules, double minSupport, double minConfidence) {
         List<Rule> rules = new ArrayList<>();
 
         try {
-            Instances instances = getInstances(ARFFString, idxClassAttribute);
+            Instances instances = getInstances(ARFFString);
             AssociationTool associator = new AprioriAssociation();
 
-            rules.addAll(associator.associate(instances, numRules));
+            rules.addAll(associator.associate(instances, numRules, minSupport, minConfidence));
 
             rules = filter(rules);
 
@@ -50,15 +50,17 @@ public class TecmidesServerImpl implements TecmidesServer {
     }
 
     @Override
-    public List<Rule> generateRulesByAttrRelativity(String ARFFString, int idxClassAttr, int numRules) {
+    public List<Rule> generateRulesByAttrRelativity(String ARFFString, int idxClassAttr, int numRules, double minSupport, double minConfidence) {
         List<Rule> rules = new ArrayList<>();
 
         try {
-            Instances instances = getInstances(ARFFString, idxClassAttr);
+            Instances instances = getInstances(ARFFString);
+            instances.setClassIndex(idxClassAttr);
+
             AssociationTool associator = new AprioriAssociation();
             AttrSelectionAlgorithmTool attrSelector = new CsfSelection();
 
-            rules.addAll(associator.associate(attrSelector.run(instances, idxClassAttr), numRules));
+            rules.addAll(associator.associate(attrSelector.run(instances, idxClassAttr), numRules, minSupport, minConfidence));
 
             rules = filter(rules);
 
@@ -73,7 +75,7 @@ public class TecmidesServerImpl implements TecmidesServer {
         return rules;
     }
 
-    private static Instances getInstances(String ARFFString, int idxClassAttr) throws FileNotFoundException, IOException, Exception {
+    private static Instances getInstances(String ARFFString) throws FileNotFoundException, IOException, Exception {
         PrintWriter writer;
 
         String arffPath = System.getProperty("java.io.tmpdir") + "/tecmides" + System.currentTimeMillis() + ".arff";
@@ -93,8 +95,6 @@ public class TecmidesServerImpl implements TecmidesServer {
         if (instances.numInstances() <= 0) {
             throw new Exception("There are no instances!");
         }
-
-        instances.setClassIndex(idxClassAttr);
 
         return instances;
     }

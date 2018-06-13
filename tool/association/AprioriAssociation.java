@@ -21,14 +21,14 @@ public class AprioriAssociation implements AssociationTool {
      * @throws java.lang.Exception
      */
     @Override
-    public List<Rule> associate(Instances instances, int numRules) throws Exception {
+    public List<Rule> associate(Instances instances, int numRules, double minSupport, double minConfidence) throws Exception {
         weka.associations.Apriori associator = new weka.associations.Apriori();
 
         String[] options = new String[4];
         options[0] = "-M";
-        options[1] = "0.25";
+        options[1] = String.valueOf(minSupport);
         options[2] = "-C";
-        options[3] = "0.7";
+        options[3] = String.valueOf(minConfidence);
 
         associator.setOptions(options);
         associator.setNumRules(numRules);
