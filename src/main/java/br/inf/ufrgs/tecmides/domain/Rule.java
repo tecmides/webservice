@@ -1,4 +1,4 @@
-package tecmides.domain;
+package br.inf.ufrgs.tecmides.domain;
 
 import java.util.ArrayList;
 import java.util.List;

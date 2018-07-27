@@ -1,5 +1,12 @@
-package tecmides;
+package br.inf.ufrgs.tecmides;
 
+import br.inf.ufrgs.tecmides.domain.Rule;
+import br.inf.ufrgs.tecmides.tool.association.AprioriAssociation;
+import br.inf.ufrgs.tecmides.tool.association.AssociationTool;
+import br.inf.ufrgs.tecmides.tool.attrSelection.algorithm.AttrSelectionAlgorithmTool;
+import br.inf.ufrgs.tecmides.tool.attrSelection.algorithm.CsfSelection;
+import br.inf.ufrgs.tecmides.tool.filter.RuleFilter;
+import br.inf.ufrgs.tecmides.tool.filter.RuleFilterImpl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,14 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jws.WebService;
-import tecmides.domain.Rule;
-import tecmides.tool.association.AprioriAssociation;
-import tecmides.tool.association.AssociationTool;
-import tecmides.tool.attrSelection.algorithm.AttrSelectionAlgorithmTool;
-import tecmides.tool.attrSelection.algorithm.CsfSelection;
-import tecmides.tool.filter.RuleFilter;
-import tecmides.tool.filter.RuleFilterImpl;
-
 import weka.core.Instances;
 
 @WebService(endpointInterface = "tecmides.TecmidesServer")

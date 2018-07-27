@@ -1,4 +1,4 @@
-package tecmides.tool.classification;
+package br.inf.ufrgs.tecmides.tool.classification;
 
 import weka.core.Instances;
 

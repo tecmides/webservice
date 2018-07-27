@@ -1,11 +1,11 @@
-package tecmides.tool.association;
+package br.inf.ufrgs.tecmides.tool.association;
 
+import br.inf.ufrgs.tecmides.domain.Rule;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import tecmides.domain.Rule;
 import weka.core.Instances;
 
 public class AprioriAssociation implements AssociationTool {

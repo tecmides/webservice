@@ -1,11 +1,11 @@
-package tecmides;
+package br.inf.ufrgs.tecmides;
 
+import br.inf.ufrgs.tecmides.domain.Rule;
 import java.util.List;
-import javax.jws.WebService;
 import javax.jws.WebMethod;
+import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
-import tecmides.domain.Rule;
 
 @WebService
 @SOAPBinding(style = Style.DOCUMENT)

@@ -1,4 +1,4 @@
-package tecmides.tool.attrSelection;
+package br.inf.ufrgs.tecmides.tool.attrSelection;
 
 import weka.core.Instances;
 

@@ -1,10 +1,11 @@
-package tecmides.tool.filter;
+package br.inf.ufrgs.tecmides.tool.filter;
 
+import br.inf.ufrgs.tecmides.domain.Operand;
+import br.inf.ufrgs.tecmides.domain.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import tecmides.domain.Operand;
-import tecmides.domain.Rule;
+
 
 public class RuleFilterImpl implements RuleFilter {
 

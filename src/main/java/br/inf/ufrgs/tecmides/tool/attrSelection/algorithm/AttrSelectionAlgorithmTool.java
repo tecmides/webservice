@@ -1,4 +1,4 @@
-package tecmides.tool.attrSelection.algorithm;
+package br.inf.ufrgs.tecmides.tool.attrSelection.algorithm;
 
 import weka.core.Instances;
 

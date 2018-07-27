@@ -1,5 +1,6 @@
-package tecmides;
+package br.inf.ufrgs.tecmides;
 
+import br.inf.ufrgs.tecmides.TecmidesServerImpl;
 import javax.xml.ws.Endpoint;
 
 public class TecmidesServerPublisher {

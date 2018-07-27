@@ -1,4 +1,4 @@
-package tecmides.tool.classification;
+package br.inf.ufrgs.tecmides.tool.classification;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
