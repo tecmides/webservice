@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 import javax.jws.WebService;
 import weka.core.Instances;
 
-@WebService(endpointInterface = "tecmides.TecmidesServer")
+@WebService(endpointInterface = "br.inf.ufrgs.tecmides.TecmidesServer")
 public class TecmidesServerImpl implements TecmidesServer {
 
     @Override
