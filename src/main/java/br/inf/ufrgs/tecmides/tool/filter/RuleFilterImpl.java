@@ -1,7 +1,7 @@
 package br.inf.ufrgs.tecmides.tool.filter;
 
-import br.inf.ufrgs.tecmides.domain.Operand;
-import br.inf.ufrgs.tecmides.domain.Rule;
+import br.inf.ufrgs.tecmides.entities.Operand;
+import br.inf.ufrgs.tecmides.entities.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package br.inf.ufrgs.tecmides.domain;
+package br.inf.ufrgs.tecmides.entities;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
