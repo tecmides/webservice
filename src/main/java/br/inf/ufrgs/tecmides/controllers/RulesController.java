@@ -5,7 +5,7 @@
  */
 package br.inf.ufrgs.tecmides.controllers;
 
-import br.inf.ufrgs.tecmides.RulesService;
+import br.inf.ufrgs.tecmides.services.RulesService;
 import br.inf.ufrgs.tecmides.entities.Rule;
 import java.security.Principal;
 import java.util.List;

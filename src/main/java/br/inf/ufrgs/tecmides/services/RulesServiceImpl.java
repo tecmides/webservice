@@ -1,4 +1,4 @@
-package br.inf.ufrgs.tecmides;
+package br.inf.ufrgs.tecmides.services;
 
 import br.inf.ufrgs.tecmides.entities.Rule;
 import br.inf.ufrgs.tecmides.tool.association.AprioriAssociation;
