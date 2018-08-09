@@ -19,7 +19,7 @@ public class InteractionService {
     InteractionRepository repository;
     public void saveAll(List<Integer> trainingSet){
         
-        trainingSet.stream().forEach((i) -> repository.save(i));
+        trainingSet.stream().forEach(i -> repository.save(i));
         
     }
 }
