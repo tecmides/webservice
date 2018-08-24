@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
 @Service
-public class RulesServiceImpl implements RulesService {
+public class RuleServiceImpl implements RuleService {
 
     @Override
     public List<Rule> generateRules(String ARFFString, int numRules, double minSupport, double minConfidence) {
@@ -38,11 +38,11 @@ public class RulesServiceImpl implements RulesService {
             rules = filter(rules);
 
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Logger.getLogger(RulesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RuleServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(RulesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RuleServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(RulesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RuleServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return rules;
@@ -64,11 +64,11 @@ public class RulesServiceImpl implements RulesService {
             rules = filter(rules);
 
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Logger.getLogger(RulesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RuleServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(RulesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RuleServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(RulesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RuleServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return rules;
@@ -103,5 +103,5 @@ public class RulesServiceImpl implements RulesService {
 
         return filter.filterByMinLift(filter.filterByMinConviction(rules, 1.1), 1.1);
     }
-
+    
 }

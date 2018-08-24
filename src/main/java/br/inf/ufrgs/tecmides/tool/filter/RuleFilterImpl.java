@@ -1,6 +1,6 @@
 package br.inf.ufrgs.tecmides.tool.filter;
 
-import br.inf.ufrgs.tecmides.entities.Operand;
+import br.inf.ufrgs.tecmides.entities.RuleOperand;
 import br.inf.ufrgs.tecmides.entities.Rule;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +20,11 @@ public class RuleFilterImpl implements RuleFilter {
     }
 
     @Override
-    public List<Rule> filterByConsequent(List<Rule> rules, Operand operand) {
+    public List<Rule> filterByConsequent(List<Rule> rules, RuleOperand operand) {
         List<Rule> filteredRules = new ArrayList<>();
 
         for (Rule rule : rules) {
-            List<Operand> matchingConsequents = rule.getConsequent().stream().filter(consequent -> consequent.getName().equals(operand.getName()) && consequent.getValue().equals(operand.getValue())).collect(Collectors.toList());
+            List<RuleOperand> matchingConsequents = rule.getConsequent().stream().filter(consequent -> consequent.getName().equals(operand.getName()) && consequent.getValue().equals(operand.getValue())).collect(Collectors.toList());
 
             if (!matchingConsequents.isEmpty()) {
                 filteredRules.add(rule);

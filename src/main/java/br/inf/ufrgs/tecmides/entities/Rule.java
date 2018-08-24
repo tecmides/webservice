@@ -4,35 +4,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Rule {
+@Entity
+public class Rule extends AuditModel {
 
-    private final List<Operand> antecedent;
-    private final List<Operand> consequent;
-    private double confidence;
-    private double lift;
-    private double conviction;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<RuleOperand> ruleOperands;
+    
+    private Double confidence;
+    private Double lift;
+    private Double conviction;
 
-    public Rule() {
-        this.antecedent = new ArrayList<>();
-        this.consequent = new ArrayList<>();
-        this.confidence = 0;
-        this.lift = 0;
-        this.conviction = 0;
+    protected Rule() {
+    }
 
+    public Rule(List<RuleOperand> ruleOperands, Double confidence, Double lift, Double conviction) {
+        this.ruleOperands = ruleOperands;
+        this.confidence = confidence;
+        this.lift = lift;
+        this.conviction = conviction;
     }
 
     public Rule(String strRule) throws Exception {
         strRule = strRule.trim();
 
-        this.antecedent = new ArrayList<>();
-        this.consequent = new ArrayList<>();
-
+        this.ruleOperands = new ArrayList<>();
         this.parseOperands(strRule);
         this.parseProperties(strRule);
     }
@@ -47,13 +54,25 @@ public class Rule {
             if (match.equals("==>")) {
                 isAntecedent = false;
             } else {
-                Operand operand = new Operand(match);
+                 String[] terms = match.split("=");
+
+                if (terms.length > 2) {
+                    throw new Exception("Operand is not in the right format");
+                }
+
+                String name = terms[0];
+                String value = terms[1];
+                
+                RuleOperand operand;
 
                 if (isAntecedent) {
-                    this.antecedent.add(operand);
+                    operand = new RuleOperand(this, name, value, RuleOperandType.ANTECEDENT);
+                    
                 } else {
-                    this.consequent.add(operand);
+                    operand = new RuleOperand(this, name, value, RuleOperandType.CONSEQUENT);
                 }
+                
+                this.ruleOperands.add(operand);
             }
 
         }
@@ -74,43 +93,61 @@ public class Rule {
         this.conviction = Double.parseDouble(convictionMatcher.group(2));
     }
 
-    /**
-     * @return the confidence
-     */
-    public double getConfidence() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Double getConfidence() {
         return confidence;
     }
 
-    /**
-     * @return the lift
-     */
-    public double getLift() {
+    public void setConfidence(Double confidence) {
+        this.confidence = confidence;
+    }
+
+    public Double getLift() {
         return lift;
     }
 
-    /**
-     * @return the conviction
-     */
-    public double getConviction() {
+    public void setLift(Double lift) {
+        this.lift = lift;
+    }
+
+    public Double getConviction() {
         return conviction;
     }
 
-    /**
-     * @return the antecedente
-     */
-    public List<Operand> getAntecedent() {
-        return antecedent;
+    public void setConviction(Double conviction) {
+        this.conviction = conviction;
     }
-
-    /**
-     * @return the consequent
-     */
-    public List<Operand> getConsequent() {
-        return consequent;
+    
+    public List<RuleOperand> getConsequent()
+    {
+        return this.ruleOperands.stream().filter(op -> op.getType() == RuleOperandType.ANTECEDENT).collect(Collectors.toList());
     }
-
+    
+    public List<RuleOperand> getAntescendt()
+    {
+        return this.ruleOperands.stream().filter(op -> op.getType() == RuleOperandType.CONSEQUENT).collect(Collectors.toList());
+    }
+    
     @Override
     public String toString() {
-        return String.format("%s => %s, conf: %f, lift: %f, conv: %f", this.antecedent.toString(), this.consequent.toString(), this.confidence, this.lift, this.conviction);
+        return String.format(
+            "Rule["
+                + "id=%d, "
+                + "confidence=%f, "
+                + "lift=%f, "
+                + "conviction=%f"
+            + "]",
+            id,
+            confidence,
+            lift,
+            conviction
+        );
     }
 }
