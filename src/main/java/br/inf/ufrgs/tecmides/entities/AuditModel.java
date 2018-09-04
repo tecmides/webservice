@@ -38,7 +38,7 @@ public abstract class AuditModel implements Serializable {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt( Date createdAt ) {
         this.createdAt = createdAt;
     }
 
@@ -46,7 +46,8 @@ public abstract class AuditModel implements Serializable {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt( Date updatedAt ) {
         this.updatedAt = updatedAt;
     }
+
 }

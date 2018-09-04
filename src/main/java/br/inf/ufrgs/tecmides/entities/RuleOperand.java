@@ -1,6 +1,7 @@
 package br.inf.ufrgs.tecmides.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,33 +11,32 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class RuleOperand extends AuditModel {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
-    @ManyToOne(optional = false)
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Rule rule;
-    
+
     private String name;
     private String value;
     private RuleOperandType type;
-    
-    protected RuleOperand() {}
 
-    public RuleOperand(Rule rule, String name, String value, RuleOperandType type) {
-        this.rule = rule;
+    protected RuleOperand() {
+    }
+
+    public RuleOperand( String name, String value ) {
         this.name = name;
         this.value = value;
-        this.type = type;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId( Long id ) {
         this.id = id;
     }
 
@@ -44,7 +44,7 @@ public class RuleOperand extends AuditModel {
         return rule;
     }
 
-    public void setRule(Rule rule) {
+    public void setRule( Rule rule ) {
         this.rule = rule;
     }
 
@@ -52,7 +52,7 @@ public class RuleOperand extends AuditModel {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName( String name ) {
         this.name = name;
     }
 
@@ -60,7 +60,7 @@ public class RuleOperand extends AuditModel {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue( String value ) {
         this.value = value;
     }
 
@@ -68,23 +68,24 @@ public class RuleOperand extends AuditModel {
         return type;
     }
 
-    public void setType(RuleOperandType type) {
+    public void setType( RuleOperandType type ) {
         this.type = type;
     }
-    
+
     @Override
     public String toString() {
         return String.format(
-            "Operand["
-                    + "id=%d, "
-                    + "name=%s, "
-                    + "value=%s, "
-                    + "type=%s"
-            + "]",
-            id,
-            name,
-            value,
-            type.name()
+                "Operand["
+                + "id=%d, "
+                + "name=%s, "
+                + "value=%s, "
+                + "type=%s"
+                + "]",
+                id,
+                name,
+                value,
+                type.name()
         );
     }
+
 }

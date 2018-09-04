@@ -1,4 +1,4 @@
-package br.inf.ufrgs.tecmides.tool.attrSelection.algorithm;
+package br.inf.ufrgs.tecmides.services.tool.attrSelection.algorithm;
 
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
@@ -9,7 +9,7 @@ import weka.filters.supervised.attribute.AttributeSelection;
 public class CsfSelection implements AttrSelectionAlgorithmTool {
 
     @Override
-    public Instances run(Instances instances, int classIndex) throws Exception {
+    public Instances run( Instances instances, int classIndex ) throws Exception {
         instances.setClassIndex(classIndex);
 
         AttributeSelection filter = new AttributeSelection();

@@ -1,4 +1,4 @@
-package br.inf.ufrgs.tecmides.tool.association;
+package br.inf.ufrgs.tecmides.services.tool.association;
 
 import br.inf.ufrgs.tecmides.entities.Rule;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class AprioriAssociation implements AssociationTool {
      * @throws java.lang.Exception
      */
     @Override
-    public List<Rule> associate(Instances instances, int numRules, double minSupport, double minConfidence) throws Exception {
+    public List<Rule> associate( Instances instances, int numRules, double minSupport, double minConfidence ) throws Exception {
         weka.associations.Apriori associator = new weka.associations.Apriori();
 
         String[] options = new String[4];
@@ -42,25 +42,25 @@ public class AprioriAssociation implements AssociationTool {
         return rules;
     }
 
-    private List<String> findRules(String rulesText) {
+    private List<String> findRules( String rulesText ) {
         List<String> strRules = new ArrayList<>();
 
         Pattern pattern = Pattern.compile("[a-z_]+=(([0-9])|([A-F])) .+(\\n|$)");
 
         Matcher matcher = pattern.matcher(rulesText);
 
-        while (matcher.find()) {
+        while( matcher.find() ) {
             strRules.add(matcher.group(0));
         }
 
         return strRules;
     }
 
-    private List<Rule> parseRules(List<String> strRules) throws Exception {
+    private List<Rule> parseRules( List<String> strRules ) throws Exception {
         List<Rule> rules = new ArrayList<>();
         Iterator<String> itrStrRules = strRules.iterator();
 
-        while (itrStrRules.hasNext()) {
+        while( itrStrRules.hasNext() ) {
             String strRule = itrStrRules.next();
 
             rules.add(new Rule(strRule));

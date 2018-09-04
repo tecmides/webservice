@@ -1,4 +1,4 @@
-package br.inf.ufrgs.tecmides.tool.classification;
+package br.inf.ufrgs.tecmides.services.tool.classification;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
@@ -7,7 +7,7 @@ import weka.core.Instances;
 public class J48Classification implements ClassificationTool {
 
     @Override
-    public String classify(Instances instances) throws Exception {
+    public String classify( Instances instances ) throws Exception {
         Classifier classifier = new J48();
         classifier.buildClassifier(instances);
 

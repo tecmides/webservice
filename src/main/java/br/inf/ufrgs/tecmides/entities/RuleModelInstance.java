@@ -1,40 +1,43 @@
 package br.inf.ufrgs.tecmides.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class RuleModelInstance extends AuditModel {
-    
+public class RuleModelInstance extends AuditModel implements Matchable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
-    
+
     private Long courseid;
     private Long userid;
     private String grade;
-    private Integer q_assign_view;
-    private Integer q_assign_submit;
-    private Integer q_forum_create;
-    private Integer q_forum_group_access;
-    private Integer q_forum_discussion_access;
-    private Integer q_resource_view;
-    private Integer st_indiv_assign_ltsubmit;
-    private Integer st_group_assign_ltsubmit;
-    private Integer st_indiv_subject_diff;
-    private Integer rc_indiv_assign_ltsubmit;
-    private Integer rc_group_assign_ltsubmit;
-    private Integer rc_indiv_subject_keepup;
-    private Integer rc_indiv_subject_diff;
+    private String q_assign_view;
+    private String q_assign_submit;
+    private String q_forum_create;
+    private String q_forum_group_access;
+    private String q_forum_discussion_access;
+    private String q_resource_view;
+    private String st_indiv_assign_ltsubmit;
+    private String st_group_assign_ltsubmit;
+    private String st_indiv_subject_diff;
+    private String rc_indiv_assign_ltsubmit;
+    private String rc_group_assign_ltsubmit;
+    private String rc_indiv_subject_keepup;
+    private String rc_indiv_subject_diff;
     private Boolean discouraged;
-    
-    private RuleModelInstance() {}
-    
-    public RuleModelInstance(Long courseid, Long userid, String grade, Integer q_assign_view, Integer q_assign_submit, Integer q_forum_create, Integer q_forum_group_access, Integer q_forum_discussion_access, Integer q_resource_view, Integer st_indiv_assign_ltsubmit, Integer st_group_assign_ltsubmit, Integer st_indiv_subject_diff, Integer rc_indiv_assign_ltsubmit, Integer rc_group_assign_ltsubmit, Integer rc_indiv_subject_keepup, Integer rc_indiv_subject_diff, Boolean discouraged) {
+
+    protected RuleModelInstance() {
+    }
+
+    public RuleModelInstance( Long courseid, Long userid, String grade, String q_assign_view, String q_assign_submit, String q_forum_create, String q_forum_group_access, String q_forum_discussion_access, String q_resource_view, String st_indiv_assign_ltsubmit, String st_group_assign_ltsubmit, String st_indiv_subject_diff, String rc_indiv_assign_ltsubmit, String rc_group_assign_ltsubmit, String rc_indiv_subject_keepup, String rc_indiv_subject_diff, Boolean discouraged ) {
         this.courseid = courseid;
         this.userid = userid;
         this.grade = grade;
@@ -54,11 +57,77 @@ public class RuleModelInstance extends AuditModel {
         this.discouraged = discouraged;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "RuleModelInstance["
+                + "id=%d, "
+                + "courseid=%d, "
+                + "userid=%d, "
+                + "grade=%s, "
+                + "q_assign_view=%s, "
+                + "q_assign_submit=%s, "
+                + "q_forum_create=%s, "
+                + "q_forum_group_access=%s, "
+                + "q_forum_discussion_access=%s, "
+                + "q_resource_view=%s, "
+                + "st_indiv_assign_ltsubmit=%s, "
+                + "st_group_assign_ltsubmit=%s, "
+                + "st_indiv_subject_diff=%s, "
+                + "rc_indiv_assign_ltsubmit=%s, "
+                + "rc_group_assign_ltsubmit=%s, "
+                + "rc_indiv_subject_keepup=%s, "
+                + "rc_indiv_subject_diff=%s, "
+                + "discouraged=%s"
+                + "]",
+                id,
+                courseid,
+                userid,
+                grade,
+                q_assign_view,
+                q_assign_submit,
+                q_forum_create,
+                q_forum_group_access,
+                q_forum_discussion_access,
+                q_resource_view,
+                st_indiv_assign_ltsubmit,
+                st_group_assign_ltsubmit,
+                st_indiv_subject_diff,
+                rc_indiv_assign_ltsubmit,
+                rc_group_assign_ltsubmit,
+                rc_indiv_subject_keepup,
+                rc_indiv_subject_diff,
+                discouraged
+        );
+    }
+
+    @Override
+    public Map<String, String> getMatchableProperties() {
+        Map<String, String> map = new HashMap<>();
+
+        map.put("grade", grade);
+        map.put("q_assign_view", q_assign_view);
+        map.put("q_assign_submit", q_assign_submit);
+        map.put("q_forum_create", q_forum_create);
+        map.put("q_forum_group_access", q_forum_group_access);
+        map.put("q_forum_discussion_access", q_forum_discussion_access);
+        map.put("q_resource_view", q_resource_view);
+        map.put("st_indiv_assign_ltsubmit", st_indiv_assign_ltsubmit);
+        map.put("st_group_assign_ltsubmit", st_group_assign_ltsubmit);
+        map.put("st_indiv_subject_diff", st_indiv_subject_diff);
+        map.put("rc_indiv_assign_ltsubmit", rc_indiv_assign_ltsubmit);
+        map.put("rc_group_assign_ltsubmit", rc_group_assign_ltsubmit);
+        map.put("rc_indiv_subject_keepup", rc_indiv_subject_keepup);
+        map.put("rc_indiv_subject_diff", rc_indiv_subject_diff);
+
+        return map;
+    }
+
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId( Long id ) {
         this.id = id;
     }
 
@@ -66,7 +135,7 @@ public class RuleModelInstance extends AuditModel {
         return courseid;
     }
 
-    public void setCourseid(Long courseid) {
+    public void setCourseid( Long courseid ) {
         this.courseid = courseid;
     }
 
@@ -74,7 +143,7 @@ public class RuleModelInstance extends AuditModel {
         return userid;
     }
 
-    public void setUserid(Long userid) {
+    public void setUserid( Long userid ) {
         this.userid = userid;
     }
 
@@ -82,111 +151,111 @@ public class RuleModelInstance extends AuditModel {
         return grade;
     }
 
-    public void setGrade(String grade) {
+    public void setGrade( String grade ) {
         this.grade = grade;
     }
 
-    public Integer getQ_assign_view() {
+    public String getQ_assign_view() {
         return q_assign_view;
     }
 
-    public void setQ_assign_view(Integer q_assign_view) {
+    public void setQ_assign_view( String q_assign_view ) {
         this.q_assign_view = q_assign_view;
     }
 
-    public Integer getQ_assign_submit() {
+    public String getQ_assign_submit() {
         return q_assign_submit;
     }
 
-    public void setQ_assign_submit(Integer q_assign_submit) {
+    public void setQ_assign_submit( String q_assign_submit ) {
         this.q_assign_submit = q_assign_submit;
     }
 
-    public Integer getQ_forum_create() {
+    public String getQ_forum_create() {
         return q_forum_create;
     }
 
-    public void setQ_forum_create(Integer q_forum_create) {
+    public void setQ_forum_create( String q_forum_create ) {
         this.q_forum_create = q_forum_create;
     }
 
-    public Integer getQ_forum_group_access() {
+    public String getQ_forum_group_access() {
         return q_forum_group_access;
     }
 
-    public void setQ_forum_group_access(Integer q_forum_group_access) {
+    public void setQ_forum_group_access( String q_forum_group_access ) {
         this.q_forum_group_access = q_forum_group_access;
     }
 
-    public Integer getQ_forum_discussion_access() {
+    public String getQ_forum_discussion_access() {
         return q_forum_discussion_access;
     }
 
-    public void setQ_forum_discussion_access(Integer q_forum_discussion_access) {
+    public void setQ_forum_discussion_access( String q_forum_discussion_access ) {
         this.q_forum_discussion_access = q_forum_discussion_access;
     }
 
-    public Integer getQ_resource_view() {
+    public String getQ_resource_view() {
         return q_resource_view;
     }
 
-    public void setQ_resource_view(Integer q_resource_view) {
+    public void setQ_resource_view( String q_resource_view ) {
         this.q_resource_view = q_resource_view;
     }
 
-    public Integer getSt_indiv_assign_ltsubmit() {
+    public String getSt_indiv_assign_ltsubmit() {
         return st_indiv_assign_ltsubmit;
     }
 
-    public void setSt_indiv_assign_ltsubmit(Integer st_indiv_assign_ltsubmit) {
+    public void setSt_indiv_assign_ltsubmit( String st_indiv_assign_ltsubmit ) {
         this.st_indiv_assign_ltsubmit = st_indiv_assign_ltsubmit;
     }
 
-    public Integer getSt_group_assign_ltsubmit() {
+    public String getSt_group_assign_ltsubmit() {
         return st_group_assign_ltsubmit;
     }
 
-    public void setSt_group_assign_ltsubmit(Integer st_group_assign_ltsubmit) {
+    public void setSt_group_assign_ltsubmit( String st_group_assign_ltsubmit ) {
         this.st_group_assign_ltsubmit = st_group_assign_ltsubmit;
     }
 
-    public Integer getSt_indiv_subject_diff() {
+    public String getSt_indiv_subject_diff() {
         return st_indiv_subject_diff;
     }
 
-    public void setSt_indiv_subject_diff(Integer st_indiv_subject_diff) {
+    public void setSt_indiv_subject_diff( String st_indiv_subject_diff ) {
         this.st_indiv_subject_diff = st_indiv_subject_diff;
     }
 
-    public Integer getRc_indiv_assign_ltsubmit() {
+    public String getRc_indiv_assign_ltsubmit() {
         return rc_indiv_assign_ltsubmit;
     }
 
-    public void setRc_indiv_assign_ltsubmit(Integer rc_indiv_assign_ltsubmit) {
+    public void setRc_indiv_assign_ltsubmit( String rc_indiv_assign_ltsubmit ) {
         this.rc_indiv_assign_ltsubmit = rc_indiv_assign_ltsubmit;
     }
 
-    public Integer getRc_group_assign_ltsubmit() {
+    public String getRc_group_assign_ltsubmit() {
         return rc_group_assign_ltsubmit;
     }
 
-    public void setRc_group_assign_ltsubmit(Integer rc_group_assign_ltsubmit) {
+    public void setRc_group_assign_ltsubmit( String rc_group_assign_ltsubmit ) {
         this.rc_group_assign_ltsubmit = rc_group_assign_ltsubmit;
     }
 
-    public Integer getRc_indiv_subject_keepup() {
+    public String getRc_indiv_subject_keepup() {
         return rc_indiv_subject_keepup;
     }
 
-    public void setRc_indiv_subject_keepup(Integer rc_indiv_subject_keepup) {
+    public void setRc_indiv_subject_keepup( String rc_indiv_subject_keepup ) {
         this.rc_indiv_subject_keepup = rc_indiv_subject_keepup;
     }
 
-    public Integer getRc_indiv_subject_diff() {
+    public String getRc_indiv_subject_diff() {
         return rc_indiv_subject_diff;
     }
 
-    public void setRc_indiv_subject_diff(Integer rc_indiv_subject_diff) {
+    public void setRc_indiv_subject_diff( String rc_indiv_subject_diff ) {
         this.rc_indiv_subject_diff = rc_indiv_subject_diff;
     }
 
@@ -194,51 +263,8 @@ public class RuleModelInstance extends AuditModel {
         return discouraged;
     }
 
-    public void setDiscouraged(Boolean discouraged) {
+    public void setDiscouraged( Boolean discouraged ) {
         this.discouraged = discouraged;
     }
-    
-    @Override
-    public String toString() {
-        return String.format(
-            "RuleModelInstance["
-                + "id=%d, "
-                + "courseid=%d, "
-                + "userid=%d, "
-                + "grade=%s, "
-                + "q_assign_view=%d, "
-                + "q_assign_submit=%d, "
-                + "q_forum_create=%d, "
-                + "q_forum_group_access=%d, "
-                + "q_forum_discussion_access=%d, "
-                + "q_resource_view=%d, "
-                + "st_indiv_assign_ltsubmit=%d, "
-                + "st_group_assign_ltsubmit=%d, "
-                + "st_indiv_subject_diff=%d, "
-                + "rc_indiv_assign_ltsubmit=%d, "
-                + "rc_group_assign_ltsubmit=%d, "
-                + "rc_indiv_subject_keepup=%d, "
-                + "rc_indiv_subject_diff=%d, "
-                + "discouraged=%d"
-            + "]",
-            id,
-            courseid,
-            userid,
-            grade,
-            q_assign_view,
-            q_assign_submit,
-            q_forum_create,
-            q_forum_group_access,
-            q_forum_discussion_access,
-            q_resource_view,
-            st_indiv_assign_ltsubmit,
-            st_group_assign_ltsubmit,
-            st_indiv_subject_diff,
-            rc_indiv_assign_ltsubmit,
-            rc_group_assign_ltsubmit,
-            rc_indiv_subject_keepup,
-            rc_indiv_subject_diff,
-            discouraged
-        );
-    }
+
 }
