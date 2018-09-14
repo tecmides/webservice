@@ -1,51 +1,24 @@
 package br.inf.ufrgs.tecmides.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-@Entity
-public class RuleOperand extends AuditModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Rule rule;
+public class RuleOperand {
 
     private String name;
     private String value;
-    private RuleOperandType type;
 
-    protected RuleOperand() {
+    public RuleOperand( String strOperand ) throws Exception {
+        String[] terms = strOperand.split("=");
+
+        if( terms.length > 2 ) {
+            throw new Exception("Operand is not in the right format");
+        }
+
+        this.name = terms[0];
+        this.value = terms[1];
     }
-
+    
     public RuleOperand( String name, String value ) {
         this.name = name;
         this.value = value;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId( Long id ) {
-        this.id = id;
-    }
-
-    public Rule getRule() {
-        return rule;
-    }
-
-    public void setRule( Rule rule ) {
-        this.rule = rule;
     }
 
     public String getName() {
@@ -64,27 +37,12 @@ public class RuleOperand extends AuditModel {
         this.value = value;
     }
 
-    public RuleOperandType getType() {
-        return type;
-    }
-
-    public void setType( RuleOperandType type ) {
-        this.type = type;
-    }
-
     @Override
     public String toString() {
         return String.format(
-                "Operand["
-                + "id=%d, "
-                + "name=%s, "
-                + "value=%s, "
-                + "type=%s"
-                + "]",
-                id,
+                "%s=%s",
                 name,
-                value,
-                type.name()
+                value
         );
     }
 

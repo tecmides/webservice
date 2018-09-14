@@ -24,7 +24,7 @@ public class RuleModelController {
 
     @RequestMapping(value = "/classify", method = RequestMethod.POST)
     public ResponseEntity<List<RuleModelInstance>> classify( @RequestBody List<RuleModelInstance> instances ) {
-        log.trace("classify called");
+        log.trace("Classify method called");
         
         return new ResponseEntity<>(service.classify(instances), HttpStatus.OK);
     }
@@ -33,13 +33,14 @@ public class RuleModelController {
     public ResponseEntity contribute( @RequestBody List<RuleModelInstance> instances ) {
         try {
             service.saveInstances(instances);
+            log.trace("Instances saved");
             service.updateModel();
-            log.trace("Instances saved!");
+            log.trace("Model updated");
             
             return new ResponseEntity<>(HttpStatus.OK);
         } catch( Exception ex ) {
-            String error = "Unabled to save the instances, check the database connection!";
-            log.error(error,ex);
+            String error = "Unabled to save the provided instances and update the model!";
+            log.error(error, ex);
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

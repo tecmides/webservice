@@ -102,6 +102,7 @@ public class RuleModelInstance extends AuditModel implements Matchable {
     }
 
     @Override
+    @JsonIgnore
     public Map<String, String> getMatchableProperties() {
         Map<String, String> map = new HashMap<>();
 

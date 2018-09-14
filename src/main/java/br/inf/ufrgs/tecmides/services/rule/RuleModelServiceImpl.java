@@ -23,7 +23,7 @@ public class RuleModelServiceImpl implements RuleModelService {
 
     @Autowired
     RuleModelInstanceService instanceService;
-
+    
     @Override
     public List<RuleModelInstance> classify( List<RuleModelInstance> instances ) {
         List<RuleModelInstance> classifiedInstances = new ArrayList<>();

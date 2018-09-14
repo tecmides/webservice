@@ -1,19 +1,21 @@
 package br.inf.ufrgs.tecmides.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
+import javax.persistence.Transient;
 
 @Entity
 public class Rule extends AuditModel implements Matchable {
@@ -21,12 +23,21 @@ public class Rule extends AuditModel implements Matchable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RuleOperand> ruleOperands = new ArrayList<>();
-
+    
+    private String antecedents;
+        
+    @Transient
+    private List<RuleOperand> opAntecedents;
+    
+    private String consequents;
+    
+    @Transient
+    private List<RuleOperand> opConsequents;
+    
     private Double confidence;
+    
     private Double lift;
+    
     private Double conviction;
 
     protected Rule() {
@@ -35,9 +46,13 @@ public class Rule extends AuditModel implements Matchable {
     public Rule( String strRule ) throws Exception {
         strRule = strRule.trim();
 
-        this.ruleOperands = new ArrayList<>();
+        this.opAntecedents = new ArrayList<>();
+        this.opConsequents = new ArrayList<>();
         this.parseOperands(strRule);
         this.parseProperties(strRule);
+        
+        this.antecedents = this.opAntecedents.stream().map(o -> o.toString()).collect(Collectors.joining(";"));
+        this.consequents = this.opConsequents.stream().map(o -> o.toString()).collect(Collectors.joining(";"));
     }
 
     private void parseOperands( String strRule ) throws Exception {
@@ -50,20 +65,13 @@ public class Rule extends AuditModel implements Matchable {
             if( match.equals("==>") ) {
                 isAntecedent = false;
             } else {
-                String[] terms = match.split("=");
-
-                if( terms.length > 2 ) {
-                    throw new Exception("Operand is not in the right format");
+                RuleOperand operand = new RuleOperand(match);
+                
+                if( isAntecedent ){
+                    this.opAntecedents.add(operand);
+                } else {
+                    this.opConsequents.add(operand);
                 }
-
-                String name = terms[0];
-                String value = terms[1];
-
-                RuleOperand operand = new RuleOperand(name, value);
-                operand.setType(isAntecedent ? RuleOperandType.ANTECEDENT : RuleOperandType.CONSEQUENT);
-                operand.setRule(this);
-
-                this.ruleOperands.add(operand);
             }
         }
     }
@@ -83,11 +91,39 @@ public class Rule extends AuditModel implements Matchable {
         this.conviction = Double.parseDouble(convictionMatcher.group(2));
     }
 
+    @PostLoad
+    protected void createOperands() {
+        this.opAntecedents = new ArrayList<>();
+        
+        for(String strOperand : this.antecedents.split(";")) {
+            try {
+                this.opAntecedents.add(new RuleOperand(strOperand));
+            } catch (Exception ex) {
+                Logger.getLogger(Rule.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        this.opConsequents = new ArrayList<>();
+        
+        for(String strOperand : this.consequents.split(";")) {
+            try {
+                this.opConsequents.add(new RuleOperand(strOperand));
+            } catch (Exception ex) {
+                Logger.getLogger(Rule.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
     @Override
+    @JsonIgnore
     public Map<String, String> getMatchableProperties() {
         Map<String, String> map = new HashMap<>();
 
-        for( RuleOperand operand : this.ruleOperands ) {
+        for( RuleOperand operand : this.opAntecedents ) {
+            map.put(operand.getName(), operand.getValue());
+        }
+        
+        for( RuleOperand operand : this.opConsequents ) {
             map.put(operand.getName(), operand.getValue());
         }
 
@@ -106,49 +142,32 @@ public class Rule extends AuditModel implements Matchable {
         return confidence;
     }
 
-    public void setConfidence( Double confidence ) {
-        this.confidence = confidence;
-    }
-
     public Double getLift() {
         return lift;
-    }
-
-    public void setLift( Double lift ) {
-        this.lift = lift;
     }
 
     public Double getConviction() {
         return conviction;
     }
 
-    public void setConviction( Double conviction ) {
-        this.conviction = conviction;
-    }
-
     public List<RuleOperand> getConsequent() {
-        return this.ruleOperands.stream().filter(op -> op.getType() == RuleOperandType.ANTECEDENT).collect(Collectors.toList());
+        return this.opConsequents;
     }
 
     public List<RuleOperand> getAntescendt() {
-        return this.ruleOperands.stream().filter(op -> op.getType() == RuleOperandType.CONSEQUENT).collect(Collectors.toList());
+        return this.opAntecedents;
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Rule["
-                + "id=%d, "
-                + "confidence=%f, "
-                + "lift=%f, "
-                + "conviction=%f, "
-                + "operands=%s"
-                + "]",
+                "id=%d %s ==> %s conf: %f lift: %f conv: %f",
                 id,
+                antecedents,
+                consequents,
                 confidence,
                 lift,
-                conviction,
-                ruleOperands.toString()
+                conviction
         );
     }
 
