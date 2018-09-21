@@ -41,7 +41,7 @@ public class RuleModelServiceImpl implements RuleModelService {
             }
 
             if( matchCount > 0 ) {
-                instance.setDiscouraged(( matchCount / rules.size() ) > this.getRuleMatchMinFactor());
+                instance.setDiscouraged(( ((double) matchCount) / rules.size() ) >= this.getRuleMatchMinFactor());
             } else {
                 instance.setDiscouraged(false);
             }

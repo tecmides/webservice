@@ -24,15 +24,15 @@ public class Rule extends AuditModel implements Matchable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    private String antecedents;
+    private String antecedent;
         
     @Transient
-    private List<RuleOperand> opAntecedents;
+    private List<RuleOperand> antecedentOperands;
     
-    private String consequents;
+    private String consequent;
     
     @Transient
-    private List<RuleOperand> opConsequents;
+    private List<RuleOperand> consequentOperands;
     
     private Double confidence;
     
@@ -46,13 +46,13 @@ public class Rule extends AuditModel implements Matchable {
     public Rule( String strRule ) throws Exception {
         strRule = strRule.trim();
 
-        this.opAntecedents = new ArrayList<>();
-        this.opConsequents = new ArrayList<>();
+        this.antecedentOperands = new ArrayList<>();
+        this.consequentOperands = new ArrayList<>();
         this.parseOperands(strRule);
         this.parseProperties(strRule);
         
-        this.antecedents = this.opAntecedents.stream().map(o -> o.toString()).collect(Collectors.joining(";"));
-        this.consequents = this.opConsequents.stream().map(o -> o.toString()).collect(Collectors.joining(";"));
+        this.antecedent = this.antecedentOperands.stream().map(o -> o.toString()).collect(Collectors.joining(";"));
+        this.consequent = this.consequentOperands.stream().map(o -> o.toString()).collect(Collectors.joining(";"));
     }
 
     private void parseOperands( String strRule ) throws Exception {
@@ -61,16 +61,16 @@ public class Rule extends AuditModel implements Matchable {
 
         while( descriptionMatcher.find() ) {
             String match = descriptionMatcher.group().trim();
-
+            
             if( match.equals("==>") ) {
                 isAntecedent = false;
             } else {
                 RuleOperand operand = new RuleOperand(match);
                 
                 if( isAntecedent ){
-                    this.opAntecedents.add(operand);
+                    this.antecedentOperands.add(operand);
                 } else {
-                    this.opConsequents.add(operand);
+                    this.consequentOperands.add(operand);
                 }
             }
         }
@@ -93,21 +93,21 @@ public class Rule extends AuditModel implements Matchable {
 
     @PostLoad
     protected void createOperands() {
-        this.opAntecedents = new ArrayList<>();
+        this.antecedentOperands = new ArrayList<>();
         
-        for(String strOperand : this.antecedents.split(";")) {
+        for(String strOperand : this.antecedent.split(";")) {
             try {
-                this.opAntecedents.add(new RuleOperand(strOperand));
+                this.antecedentOperands.add(new RuleOperand(strOperand));
             } catch (Exception ex) {
                 Logger.getLogger(Rule.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
-        this.opConsequents = new ArrayList<>();
+        this.consequentOperands = new ArrayList<>();
         
-        for(String strOperand : this.consequents.split(";")) {
+        for(String strOperand : this.consequent.split(";")) {
             try {
-                this.opConsequents.add(new RuleOperand(strOperand));
+                this.consequentOperands.add(new RuleOperand(strOperand));
             } catch (Exception ex) {
                 Logger.getLogger(Rule.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -119,11 +119,11 @@ public class Rule extends AuditModel implements Matchable {
     public Map<String, String> getMatchableProperties() {
         Map<String, String> map = new HashMap<>();
 
-        for( RuleOperand operand : this.opAntecedents ) {
+        for( RuleOperand operand : this.antecedentOperands ) {
             map.put(operand.getName(), operand.getValue());
         }
         
-        for( RuleOperand operand : this.opConsequents ) {
+        for( RuleOperand operand : this.consequentOperands ) {
             map.put(operand.getName(), operand.getValue());
         }
 
@@ -151,20 +151,19 @@ public class Rule extends AuditModel implements Matchable {
     }
 
     public List<RuleOperand> getConsequent() {
-        return this.opConsequents;
+        return this.consequentOperands;
     }
 
-    public List<RuleOperand> getAntescendt() {
-        return this.opAntecedents;
+    public List<RuleOperand> getAntecedent() {
+        return this.antecedentOperands;
     }
 
     @Override
     public String toString() {
-        return String.format(
-                "id=%d %s ==> %s conf: %f lift: %f conv: %f",
+        return String.format("id=%d %s ==> %s conf: %f lift: %f conv: %f",
                 id,
-                antecedents,
-                consequents,
+                antecedent,
+                consequent,
                 confidence,
                 lift,
                 conviction

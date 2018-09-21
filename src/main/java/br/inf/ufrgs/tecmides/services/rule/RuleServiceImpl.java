@@ -16,14 +16,14 @@ import weka.core.Instances;
 public class RuleServiceImpl implements RuleService {
 
     @Override
-    public List<Rule> generateRules( RuleModelDataset dataset, int numRules, double minSupport, double minConfidence, double minLift, double minConviction ) throws Exception {
+    public List<Rule> generateRules( RuleModelDataset dataset, int numRules, double minSupport, double minConfidence ) throws Exception {
         List<Rule> rules = new ArrayList<>();
 
         Instances instances = dataset.getInstances();
         AssociationTool associator = new AprioriAssociation();
 
         rules.addAll(associator.associate(instances, numRules, minSupport, minConfidence));
-
+        
         return rules;
     }
 
@@ -33,10 +33,12 @@ public class RuleServiceImpl implements RuleService {
 
         List<RuleOperand> operands = new ArrayList<>();
         operands.add(new RuleOperand("st_indiv_assign_ltsubmit", "discouraged"));
-        operands.add(new RuleOperand("st_group_assign_ltsubmit", "discouraged"));
         operands.add(new RuleOperand("st_indiv_subject_diff", "discouraged"));
-
-        return filter.filterByConsequent(filter.filterByMinLift(filter.filterByMinConviction(rules, minLift), minConviction), operands);
+        operands.add(new RuleOperand("st_group_assign_ltsubmit", "discouraged"));
+        
+        List<Rule> filteredRules = filter.filterByOperands(filter.filterByMinLift(filter.filterByMinConviction(rules, minLift), minConviction), operands);
+        
+        return filteredRules.stream().distinct().collect(Collectors.toList());
     }
 
 }

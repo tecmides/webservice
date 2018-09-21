@@ -13,8 +13,8 @@ public class ResourceRuleMining implements ModuleRuleMining {
     public List<Rule> getRules( List<RuleModelInstance> instances, RuleService ruleService ) throws Exception {
         List<Rule> rules = new ArrayList<>();
 
-        rules.addAll(ruleService.generateRules(new ResourceRuleMiningDataset1("res_rel1", instances), 10, 0.2, 0.7, 1.1, 1.1));
-        rules.addAll(ruleService.generateRules(new ResourceRuleMiningDataset2("res_rel2", instances), 10, 0.2, 0.7, 1.1, 1.1));
+        rules.addAll(ruleService.generateRules(new ResourceRuleMiningDataset1("res_rel1", instances), 10, 0.2, 0.7));
+        rules.addAll(ruleService.generateRules(new ResourceRuleMiningDataset2("res_rel2", instances), 10, 0.2, 0.7));
 
         return rules;
     }

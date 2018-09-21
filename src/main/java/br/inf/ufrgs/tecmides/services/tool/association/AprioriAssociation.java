@@ -36,16 +36,16 @@ public class AprioriAssociation implements AssociationTool {
         associator.buildAssociations(instances);
 
         List<String> strRules = this.findRules(associator.toString());
-
+        
         List<Rule> rules = this.parseRules(strRules);
-
+        
         return rules;
     }
 
     private List<String> findRules( String rulesText ) {
         List<String> strRules = new ArrayList<>();
 
-        Pattern pattern = Pattern.compile("[a-z_]+=(([0-9])|([A-F])) .+(\\n|$)");
+        Pattern pattern = Pattern.compile("[a-z_]+=(([a-z-]+)|([A-F])) .+(\\n|$)");
 
         Matcher matcher = pattern.matcher(rulesText);
 

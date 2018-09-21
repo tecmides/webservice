@@ -4,8 +4,6 @@ import br.inf.ufrgs.tecmides.entities.Rule;
 import br.inf.ufrgs.tecmides.entities.RuleModelInstance;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import weka.core.Attribute;
 
@@ -15,7 +13,7 @@ public class ForumRuleMining implements ModuleRuleMining {
     public List<Rule> getRules( List<RuleModelInstance> instances, RuleService ruleService ) throws Exception {
         List<Rule> rules = new ArrayList<>();
 
-        rules.addAll(ruleService.generateRules(new ForumRuleMiningDataset1("forum_rel1", instances), 20, 0.2, 0.7, 1.1, 1.1));
+        rules.addAll(ruleService.generateRules(new ForumRuleMiningDataset1("forum_rel1", instances), 20, 0.25, 0.7));
 
         return rules;
     }

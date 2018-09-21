@@ -11,5 +11,9 @@ public interface RuleFilter {
     public List<Rule> filterByMinConviction( List<Rule> rules, double minConviction );
 
     public List<Rule> filterByConsequent( List<Rule> rules, List<RuleOperand> operands );
+    
+    public List<Rule> filterByAntecedent( List<Rule> rules, List<RuleOperand> operands );
+    
+    public List<Rule> filterByOperands( List<Rule> rules, List<RuleOperand> operands );
 
 }

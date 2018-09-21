@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface RuleService {
 
-    public List<Rule> generateRules( RuleModelDataset dataset, int numRules, double minSupport, double minConfidence, double minLift, double minConviction ) throws Exception;
+    public List<Rule> generateRules( RuleModelDataset dataset, int numRules, double minSupport, double minConfidence ) throws Exception;
 
     public List<Rule> filter( List<Rule> rules, double minLift, double minConviction );
 
