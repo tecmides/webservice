@@ -23,7 +23,7 @@ public class RuleModelController {
     private final Logger log = LoggerFactory.getLogger(RuleModelController.class);
 
     @RequestMapping(value = "/classify", method = RequestMethod.POST)
-    public ResponseEntity<List<RuleModelInstance>> classify( @RequestBody List<RuleModelInstance> instances ) {
+    public ResponseEntity classify( @RequestBody List<RuleModelInstance> instances ) {
         try {
             log.trace("Classify method called");
 
@@ -31,7 +31,7 @@ public class RuleModelController {
         } catch( Exception ex ) {
             String error = "Unabled to classify the instances!";
             log.error(error, ex);
-            return new ResponseEntity<>(instances, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

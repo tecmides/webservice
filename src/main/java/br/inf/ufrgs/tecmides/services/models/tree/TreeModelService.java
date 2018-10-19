@@ -59,7 +59,7 @@ public class TreeModelService implements ModelService<TreeModelInstance> {
     public void updateModel() throws Exception {
         List<TreeModelInstance> instances = this.instanceRepository.findAll();
         ModelDataset dataset = datasetFactory.create("contribute", this.instanceService.getModelInstanceAttributes(), this.instanceService.getModelInstanceClassificaitonAttribute(), instances);
-        model.build(dataset);
+        model.train(dataset);
         model.save();
     }
 

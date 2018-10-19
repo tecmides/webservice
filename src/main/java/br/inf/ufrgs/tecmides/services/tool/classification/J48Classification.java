@@ -44,7 +44,7 @@ public class J48Classification implements ClassificationTool {
     }
 
     @Override
-    public void load(String path) throws Exception {
+    public void restore(String path) throws Exception {
         File file = new File(path);
         
         if( file.exists() ) {

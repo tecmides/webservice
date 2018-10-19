@@ -23,7 +23,7 @@ public class ClassificationModelFactory {
         }
         
         @Override
-        public void build( ModelDataset dataset ) throws Exception {
+        public void train( ModelDataset dataset ) throws Exception {
             tool.train(dataset);
         }
 
@@ -44,7 +44,7 @@ public class ClassificationModelFactory {
             String basePath = classLoader.getResource(".").getPath() + "/models";
             new File(basePath).mkdirs();
 
-            this.tool.save(basePath + "/" + this.name + ".model");
+            this.tool.restore(basePath + "/" + this.name + ".model");
         }
 
         @Override

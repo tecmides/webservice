@@ -2,7 +2,6 @@ package br.inf.ufrgs.tecmides.controllers;
 
 import br.inf.ufrgs.tecmides.entities.tree.TreeModelInstance;
 import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class TreeModelController {
     private final Logger log = LoggerFactory.getLogger(TreeModelController.class);
 
     @RequestMapping(value = "/classify", method = RequestMethod.POST)
-    public ResponseEntity<List<TreeModelInstance>> classify( @RequestBody List<TreeModelInstance> instances ) {
+    public ResponseEntity classify( @RequestBody List<TreeModelInstance> instances ) {
         log.trace("Classify method called");
 
         try {
@@ -34,7 +33,7 @@ public class TreeModelController {
         } catch( Exception ex ) {
             String error = "Unabled to classify the instances!";
             log.error(error, ex);
-            return new ResponseEntity<>(instances, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

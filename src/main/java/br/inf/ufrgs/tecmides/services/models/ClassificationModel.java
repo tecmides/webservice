@@ -8,7 +8,7 @@ public interface ClassificationModel {
 
     public ModelDataset classify( ModelInstanceService service, ModelDataset dataset ) throws Exception;
 
-    public void build( ModelDataset dataset ) throws Exception;
+    public void train( ModelDataset dataset ) throws Exception;
     
     public void save() throws Exception;
 
