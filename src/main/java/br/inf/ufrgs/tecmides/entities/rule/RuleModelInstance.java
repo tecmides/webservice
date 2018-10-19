@@ -1,15 +1,21 @@
-package br.inf.ufrgs.tecmides.entities;
+package br.inf.ufrgs.tecmides.entities.rule;
 
+import br.inf.ufrgs.tecmides.entities.AuditModel;
+import br.inf.ufrgs.tecmides.entities.ModelInstance;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import weka.core.Attribute;
 
 @Entity
-public class RuleModelInstance extends AuditModel implements Matchable {
+public class RuleModelInstance extends AuditModel implements ModelInstance, Matchable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,12 +38,13 @@ public class RuleModelInstance extends AuditModel implements Matchable {
     private String rc_group_assign_ltsubmit;
     private String rc_indiv_subject_keepup;
     private String rc_indiv_subject_diff;
-    private Boolean discouraged;
+    private Double discouraged_coeficient;
+    private String discouraged;
 
     protected RuleModelInstance() {
     }
 
-    public RuleModelInstance( Long courseid, Long userid, String grade, String q_assign_view, String q_assign_submit, String q_forum_create, String q_forum_group_access, String q_forum_discussion_access, String q_resource_view, String st_indiv_assign_ltsubmit, String st_group_assign_ltsubmit, String st_indiv_subject_diff, String rc_indiv_assign_ltsubmit, String rc_group_assign_ltsubmit, String rc_indiv_subject_keepup, String rc_indiv_subject_diff, Boolean discouraged ) {
+    public RuleModelInstance( Long courseid, Long userid, String grade, String q_assign_view, String q_assign_submit, String q_forum_create, String q_forum_group_access, String q_forum_discussion_access, String q_resource_view, String st_indiv_assign_ltsubmit, String st_group_assign_ltsubmit, String st_indiv_subject_diff, String rc_indiv_assign_ltsubmit, String rc_group_assign_ltsubmit, String rc_indiv_subject_keepup, String rc_indiv_subject_diff, Double discouraged_coeficient, String discouraged ) {
         this.courseid = courseid;
         this.userid = userid;
         this.grade = grade;
@@ -54,6 +61,7 @@ public class RuleModelInstance extends AuditModel implements Matchable {
         this.rc_group_assign_ltsubmit = rc_group_assign_ltsubmit;
         this.rc_indiv_subject_keepup = rc_indiv_subject_keepup;
         this.rc_indiv_subject_diff = rc_indiv_subject_diff;
+        this.discouraged_coeficient = discouraged_coeficient;
         this.discouraged = discouraged;
     }
 
@@ -260,12 +268,54 @@ public class RuleModelInstance extends AuditModel implements Matchable {
         this.rc_indiv_subject_diff = rc_indiv_subject_diff;
     }
 
-    public Boolean getDiscouraged() {
+    public Double getDiscouraged_coeficient() {
+        return discouraged_coeficient;
+    }
+
+    public void setDiscouraged_coeficient( Double discouraged_coeficient ) {
+        this.discouraged_coeficient = discouraged_coeficient;
+    }
+
+    public String getDiscouraged() {
         return discouraged;
     }
 
-    public void setDiscouraged( Boolean discouraged ) {
-        this.discouraged = discouraged;
+    @Override
+    public void setClassification( double classification ) {
+        this.discouraged = RuleModelInstance.getClassificaitonAttribute().value(( classification >= 0.75 ) ? 1 : 0);
+
+        this.discouraged_coeficient = classification;
+    }
+
+    public static Attribute getClassificaitonAttribute() {
+        String[] discouraged = {"no", "yes"};
+
+        return new Attribute("discouraged", new ArrayList<>(Arrays.asList(discouraged)));
+    }
+
+    public static List<Attribute> getAttributes() {
+        String[] grades = {"A", "B", "C", "D", "E", "F"};
+        String[] quartiles = {"low", "medium", "medium-high", "high"};
+        String[] recurrency = {"never", "rarely", "sometimes", "often", "always"};
+        String[] state = {"satisfied", "dissatisfied", "discouraged", "animated", "other", "none"};
+
+        List<Attribute> attributes = new ArrayList<>();
+        attributes.add(new Attribute("grade", new ArrayList<>(Arrays.asList(grades))));
+        attributes.add(new Attribute("q_assign_view", new ArrayList<>(Arrays.asList(quartiles))));
+        attributes.add(new Attribute("q_assign_submit", new ArrayList<>(Arrays.asList(quartiles))));
+        attributes.add(new Attribute("q_forum_create", new ArrayList<>(Arrays.asList(quartiles))));
+        attributes.add(new Attribute("q_forum_group_access", new ArrayList<>(Arrays.asList(quartiles))));
+        attributes.add(new Attribute("q_forum_discussion_access", new ArrayList<>(Arrays.asList(quartiles))));
+        attributes.add(new Attribute("q_resource_view", new ArrayList<>(Arrays.asList(quartiles))));
+        attributes.add(new Attribute("rc_indiv_assign_ltsubmit", new ArrayList<>(Arrays.asList(recurrency))));
+        attributes.add(new Attribute("rc_group_assign_ltsubmit", new ArrayList<>(Arrays.asList(recurrency))));
+        attributes.add(new Attribute("rc_indiv_subject_keepup", new ArrayList<>(Arrays.asList(recurrency))));
+        attributes.add(new Attribute("rc_indiv_subject_diff", new ArrayList<>(Arrays.asList(recurrency))));
+        attributes.add(new Attribute("st_indiv_assign_ltsubmit", new ArrayList<>(Arrays.asList(state))));
+        attributes.add(new Attribute("st_group_assign_ltsubmit", new ArrayList<>(Arrays.asList(state))));
+        attributes.add(new Attribute("st_indiv_subject_diff", new ArrayList<>(Arrays.asList(state))));
+
+        return attributes;
     }
 
 }

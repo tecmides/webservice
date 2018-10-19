@@ -1,4 +1,4 @@
-package br.inf.ufrgs.tecmides.entities;
+package br.inf.ufrgs.tecmides.entities.rule;
 
 public class RuleOperand {
 
@@ -15,7 +15,7 @@ public class RuleOperand {
         this.name = terms[0];
         this.value = terms[1];
     }
-    
+
     public RuleOperand( String name, String value ) {
         this.name = name;
         this.value = value;

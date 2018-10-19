@@ -1,6 +1,6 @@
 package br.inf.ufrgs.tecmides.services.tool.association;
 
-import br.inf.ufrgs.tecmides.entities.Rule;
+import br.inf.ufrgs.tecmides.entities.rule.Rule;
 import java.util.List;
 import weka.core.Instances;
 

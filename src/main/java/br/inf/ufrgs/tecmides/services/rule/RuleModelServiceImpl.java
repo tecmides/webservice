@@ -1,7 +1,7 @@
 package br.inf.ufrgs.tecmides.services.rule;
 
-import br.inf.ufrgs.tecmides.entities.Rule;
-import br.inf.ufrgs.tecmides.entities.RuleModelInstance;
+import br.inf.ufrgs.tecmides.entities.rule.Rule;
+import br.inf.ufrgs.tecmides.entities.rule.RuleModelInstance;
 import br.inf.ufrgs.tecmides.repositories.RuleModelInstanceRepository;
 import br.inf.ufrgs.tecmides.repositories.RuleRepository;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class RuleModelServiceImpl implements RuleModelService {
 
     @Autowired
     RuleModelInstanceService instanceService;
-    
+
     @Override
     public List<RuleModelInstance> classify( List<RuleModelInstance> instances ) {
         List<RuleModelInstance> classifiedInstances = new ArrayList<>();
@@ -31,6 +31,7 @@ public class RuleModelServiceImpl implements RuleModelService {
 
         for( RuleModelInstance instance : instances ) {
             int matchCount = 0;
+            double coeficient = 0.0;
 
             for( Rule rule : rules ) {
                 Boolean itMatches = this.instanceService.instanceMatchesRule(instance, rule);
@@ -40,21 +41,14 @@ public class RuleModelServiceImpl implements RuleModelService {
                 }
             }
 
-            if( matchCount > 0 ) {
-                instance.setDiscouraged(( ((double) matchCount) / rules.size() ) >= this.getRuleMatchMinFactor());
-            } else {
-                instance.setDiscouraged(false);
-            }
+            coeficient = ( (double) matchCount ) / rules.size();
+
+            instance.setClassification(coeficient);
 
             classifiedInstances.add(instance);
         }
 
         return classifiedInstances;
-    }
-
-    @Override
-    public Double getRuleMatchMinFactor() {
-        return 0.75;
     }
 
     @Override

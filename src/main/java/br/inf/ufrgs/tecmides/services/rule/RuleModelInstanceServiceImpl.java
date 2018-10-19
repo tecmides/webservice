@@ -1,6 +1,6 @@
 package br.inf.ufrgs.tecmides.services.rule;
 
-import br.inf.ufrgs.tecmides.entities.Matchable;
+import br.inf.ufrgs.tecmides.entities.rule.Matchable;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;

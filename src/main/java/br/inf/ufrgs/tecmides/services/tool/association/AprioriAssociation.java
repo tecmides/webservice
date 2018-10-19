@@ -1,6 +1,6 @@
 package br.inf.ufrgs.tecmides.services.tool.association;
 
-import br.inf.ufrgs.tecmides.entities.Rule;
+import br.inf.ufrgs.tecmides.entities.rule.Rule;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,9 +36,9 @@ public class AprioriAssociation implements AssociationTool {
         associator.buildAssociations(instances);
 
         List<String> strRules = this.findRules(associator.toString());
-        
+
         List<Rule> rules = this.parseRules(strRules);
-        
+
         return rules;
     }
 

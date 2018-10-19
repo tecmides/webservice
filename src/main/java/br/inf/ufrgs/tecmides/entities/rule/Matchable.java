@@ -1,4 +1,4 @@
-package br.inf.ufrgs.tecmides.entities;
+package br.inf.ufrgs.tecmides.entities.rule;
 
 import java.util.Map;
 

@@ -1,44 +1,35 @@
 package br.inf.ufrgs.tecmides.services.rule;
 
-import br.inf.ufrgs.tecmides.entities.Rule;
-import br.inf.ufrgs.tecmides.entities.RuleModelInstance;
+import br.inf.ufrgs.tecmides.entities.rule.Rule;
+import br.inf.ufrgs.tecmides.entities.rule.RuleModelInstance;
+import br.inf.ufrgs.tecmides.services.ModelDataset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import weka.core.Attribute;
 
-public class ForumRuleMining implements ModuleRuleMining {
+public class ForumRuleMining extends ModuleRuleMining {
 
     @Override
     public List<Rule> getRules( List<RuleModelInstance> instances, RuleService ruleService ) throws Exception {
         List<Rule> rules = new ArrayList<>();
 
-        rules.addAll(ruleService.generateRules(new ForumRuleMiningDataset1("forum_rel1", instances), 20, 0.25, 0.7));
+        rules.addAll(ruleService.generateRules(getForumDataset1(instances), 20, 0.25, 0.7));
 
         return rules;
     }
 
-    class ForumRuleMiningDataset1 extends RuleModelDataset {
+    public ModelDataset getForumDataset1( List<RuleModelInstance> instances ) {
+        String[] wantedAttributes = {
+            "grade",
+            "q_forum_create",
+            "q_forum_group_access",
+            "q_forum_discussion_access",
+            "st_group_assign_ltsubmit",
+            "rc_group_assign_ltsubmit",
+            "rc_indiv_subject_keepup",
+            "rc_indiv_subject_diff"
+        };
 
-        public ForumRuleMiningDataset1( String name, List<RuleModelInstance> instances ) throws NoSuchFieldException {
-            super(name, instances);
-        }
-
-        @Override
-        public List<Attribute> getAttributeDefinition() {
-            List<String> selectedAttributes = new ArrayList<>();
-            selectedAttributes.add("grade");
-            selectedAttributes.add("q_forum_create");
-            selectedAttributes.add("q_forum_group_access");
-            selectedAttributes.add("q_forum_discussion_access");
-            selectedAttributes.add("st_group_assign_ltsubmit");
-            selectedAttributes.add("rc_group_assign_ltsubmit");
-            selectedAttributes.add("rc_indiv_subject_keepup");
-            selectedAttributes.add("rc_indiv_subject_diff");
-
-            return super.getAttributeDefinition().stream().filter(attr -> selectedAttributes.contains(attr.name())).collect(Collectors.toList());
-        }
-
+        return this.createCustomDataset("forum_rel1", wantedAttributes, instances);
     }
 
 }

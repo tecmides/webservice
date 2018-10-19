@@ -1,7 +1,7 @@
 package br.inf.ufrgs.tecmides.services.tool.filter;
 
-import br.inf.ufrgs.tecmides.entities.RuleOperand;
-import br.inf.ufrgs.tecmides.entities.Rule;
+import br.inf.ufrgs.tecmides.entities.rule.RuleOperand;
+import br.inf.ufrgs.tecmides.entities.rule.Rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,9 +34,9 @@ public class RuleFilterImpl implements RuleFilter {
 
         return filteredRules.stream().distinct().collect(Collectors.toList());
     }
-    
+
     @Override
-    public List<Rule> filterByAntecedent(List<Rule> rules, List<RuleOperand> operands) {
+    public List<Rule> filterByAntecedent( List<Rule> rules, List<RuleOperand> operands ) {
         List<Rule> filteredRules = new ArrayList<>();
 
         for( RuleOperand operand : operands ) {
@@ -51,7 +51,7 @@ public class RuleFilterImpl implements RuleFilter {
 
         return filteredRules.stream().distinct().collect(Collectors.toList());
     }
-    
+
     @Override
     public List<Rule> filterByOperands( List<Rule> rules, List<RuleOperand> operands ) {
         List<Rule> filteredRules = new ArrayList<>();

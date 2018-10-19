@@ -1,17 +1,25 @@
 package br.inf.ufrgs.tecmides.services.tool.classification;
 
-import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
-import weka.core.Instances;
+import br.inf.ufrgs.tecmides.services.ModelDataset;
 
-public class J48Classification implements ClassificationTool {
+public class J48Classification extends BaseClassificationModel {
 
     @Override
-    public String classify( Instances instances ) throws Exception {
-        Classifier classifier = new J48();
-        classifier.buildClassifier(instances);
+    public String getModelName() {
+        return "j48_tree";
+    }
 
-        return classifier.toString();
+    @Override
+    public void build( ModelDataset dataset ) throws Exception {
+        J48 tree = new J48();
+        String[] options = new String[1];
+        options[0] = "-U";
+
+        tree.setOptions(options);
+        tree.buildClassifier(dataset.getInstances());
+
+        this.setClassifier(tree);
     }
 
 }

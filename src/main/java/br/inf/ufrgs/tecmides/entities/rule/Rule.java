@@ -1,5 +1,6 @@
-package br.inf.ufrgs.tecmides.entities;
+package br.inf.ufrgs.tecmides.entities.rule;
 
+import br.inf.ufrgs.tecmides.entities.AuditModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,21 +24,21 @@ public class Rule extends AuditModel implements Matchable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     private String antecedent;
-        
+
     @Transient
     private List<RuleOperand> antecedentOperands;
-    
+
     private String consequent;
-    
+
     @Transient
     private List<RuleOperand> consequentOperands;
-    
+
     private Double confidence;
-    
+
     private Double lift;
-    
+
     private Double conviction;
 
     protected Rule() {
@@ -50,7 +51,7 @@ public class Rule extends AuditModel implements Matchable {
         this.consequentOperands = new ArrayList<>();
         this.parseOperands(strRule);
         this.parseProperties(strRule);
-        
+
         this.antecedent = this.antecedentOperands.stream().map(o -> o.toString()).collect(Collectors.joining(";"));
         this.consequent = this.consequentOperands.stream().map(o -> o.toString()).collect(Collectors.joining(";"));
     }
@@ -61,13 +62,13 @@ public class Rule extends AuditModel implements Matchable {
 
         while( descriptionMatcher.find() ) {
             String match = descriptionMatcher.group().trim();
-            
+
             if( match.equals("==>") ) {
                 isAntecedent = false;
             } else {
                 RuleOperand operand = new RuleOperand(match);
-                
-                if( isAntecedent ){
+
+                if( isAntecedent ) {
                     this.antecedentOperands.add(operand);
                 } else {
                     this.consequentOperands.add(operand);
@@ -94,26 +95,26 @@ public class Rule extends AuditModel implements Matchable {
     @PostLoad
     protected void createOperands() {
         this.antecedentOperands = new ArrayList<>();
-        
-        for(String strOperand : this.antecedent.split(";")) {
+
+        for( String strOperand : this.antecedent.split(";") ) {
             try {
                 this.antecedentOperands.add(new RuleOperand(strOperand));
-            } catch (Exception ex) {
+            } catch( Exception ex ) {
                 Logger.getLogger(Rule.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         this.consequentOperands = new ArrayList<>();
-        
-        for(String strOperand : this.consequent.split(";")) {
+
+        for( String strOperand : this.consequent.split(";") ) {
             try {
                 this.consequentOperands.add(new RuleOperand(strOperand));
-            } catch (Exception ex) {
+            } catch( Exception ex ) {
                 Logger.getLogger(Rule.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-    
+
     @Override
     @JsonIgnore
     public Map<String, String> getMatchableProperties() {
@@ -122,7 +123,7 @@ public class Rule extends AuditModel implements Matchable {
         for( RuleOperand operand : this.antecedentOperands ) {
             map.put(operand.getName(), operand.getValue());
         }
-        
+
         for( RuleOperand operand : this.consequentOperands ) {
             map.put(operand.getName(), operand.getValue());
         }

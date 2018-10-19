@@ -1,6 +1,6 @@
 package br.inf.ufrgs.tecmides.services.rule;
 
-import br.inf.ufrgs.tecmides.entities.RuleModelInstance;
+import br.inf.ufrgs.tecmides.entities.rule.RuleModelInstance;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 public interface RuleModelService {
 
     public List<RuleModelInstance> classify( List<RuleModelInstance> instances );
-
-    public Double getRuleMatchMinFactor();
 
     public void saveInstances( List<RuleModelInstance> dataset );
 
