@@ -1,14 +1,16 @@
-package br.inf.ufrgs.tecmides.services.rule;
+package br.inf.ufrgs.tecmides.services.models.rule;
 
 import br.inf.ufrgs.tecmides.entities.rule.Rule;
 import br.inf.ufrgs.tecmides.entities.rule.RuleOperand;
-import br.inf.ufrgs.tecmides.services.ModelDataset;
+import br.inf.ufrgs.tecmides.services.models.ModelDataset;
 import br.inf.ufrgs.tecmides.services.tool.association.AprioriAssociation;
 import br.inf.ufrgs.tecmides.services.tool.association.AssociationTool;
 import br.inf.ufrgs.tecmides.services.tool.filter.RuleFilter;
 import br.inf.ufrgs.tecmides.services.tool.filter.RuleFilterImpl;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
@@ -40,6 +42,21 @@ public class RuleServiceImpl implements RuleService {
         List<Rule> filteredRules = filter.filterByOperands(filter.filterByMinLift(filter.filterByMinConviction(rules, minLift), minConviction), operands);
 
         return filteredRules.stream().distinct().collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, String> mappedFields(Rule toMap) {
+        Map<String, String> map = new HashMap<>();
+
+        for( RuleOperand operand : toMap.getAntecedent() ) {
+            map.put(operand.getName(), operand.getValue());
+        }
+
+        for( RuleOperand operand : toMap.getConsequent() ) {
+            map.put(operand.getName(), operand.getValue());
+        }
+
+        return map;
     }
 
 }

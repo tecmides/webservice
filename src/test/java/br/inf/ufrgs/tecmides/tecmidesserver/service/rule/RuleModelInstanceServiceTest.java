@@ -2,7 +2,7 @@ package br.inf.ufrgs.tecmides.tecmidesserver.service.rule;
 
 import br.inf.ufrgs.tecmides.entities.rule.Rule;
 import br.inf.ufrgs.tecmides.entities.rule.RuleModelInstance;
-import br.inf.ufrgs.tecmides.services.rule.RuleModelInstanceService;
+import br.inf.ufrgs.tecmides.services.models.rule.RuleModelInstanceService;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;

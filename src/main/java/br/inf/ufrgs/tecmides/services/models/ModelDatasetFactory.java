@@ -1,6 +1,5 @@
-package br.inf.ufrgs.tecmides.services;
+package br.inf.ufrgs.tecmides.services.models;
 
-import br.inf.ufrgs.tecmides.entities.ModelInstance;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -13,9 +12,9 @@ import weka.core.DenseInstance;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 
-public class ModelDatasetFactory<T extends ModelInstance> {
+public class ModelDatasetFactory<J> {
 
-    public ModelDataset create( String name, List<Attribute> attributes, Attribute classAttribute, List<T> instances ) {
+    public ModelDataset create( String name, List<Attribute> attributes, Attribute classAttribute, List<J> instances ) {
         try {
             return new BaseModelDataset<>(name, attributes, classAttribute, instances);
         } catch( NoSuchFieldException ex ) {
@@ -23,12 +22,12 @@ public class ModelDatasetFactory<T extends ModelInstance> {
         }
     }
 
-    class BaseModelDataset<T extends ModelInstance> implements ModelDataset<T> {
+    class BaseModelDataset<J> implements ModelDataset<J> {
 
-        private List<T> modelInstances;
+        private List<J> modelInstances;
         private Instances dataset;
 
-        public BaseModelDataset( String name, List<Attribute> attributes, Attribute classAttribute, List<T> instances ) throws NoSuchFieldException {
+        public BaseModelDataset( String name, List<Attribute> attributes, Attribute classAttribute, List<J> instances ) throws NoSuchFieldException {
             attributes.add(classAttribute);
             this.dataset = new Instances(name, new ArrayList<>(attributes), instances.size());
             this.dataset.setClass(classAttribute);
@@ -38,7 +37,7 @@ public class ModelDatasetFactory<T extends ModelInstance> {
             parsedInstance.setDataset(this.dataset);
 
             for( int idxInstance = 0; idxInstance < instances.size(); idxInstance ++ ) {
-                T instance = instances.get(idxInstance);
+                J instance = instances.get(idxInstance);
 
                 for( int idxAttribute = 0; idxAttribute < attributes.size(); idxAttribute ++ ) {
                     try {
@@ -93,14 +92,8 @@ public class ModelDatasetFactory<T extends ModelInstance> {
         }
 
         @Override
-        public List<T> getModelInstances() {
+        public List<J> getModelInstances() {
             return this.modelInstances;
         }
-
-        @Override
-        public void setModelInstanceClassification( int index, double classification ) {
-            this.modelInstances.get(index).setClassification(classification);
-        }
-
     }
 }

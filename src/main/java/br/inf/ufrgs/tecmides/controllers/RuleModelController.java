@@ -1,7 +1,7 @@
 package br.inf.ufrgs.tecmides.controllers;
 
 import br.inf.ufrgs.tecmides.entities.rule.RuleModelInstance;
-import br.inf.ufrgs.tecmides.services.rule.RuleModelService;
+import br.inf.ufrgs.tecmides.services.models.ModelService;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,21 +18,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class RuleModelController {
 
     @Autowired
-    RuleModelService service;
+    ModelService<RuleModelInstance> service;
 
     private final Logger log = LoggerFactory.getLogger(RuleModelController.class);
 
     @RequestMapping(value = "/classify", method = RequestMethod.POST)
     public ResponseEntity<List<RuleModelInstance>> classify( @RequestBody List<RuleModelInstance> instances ) {
-        log.trace("Classify method called");
+        try {
+            log.trace("Classify method called");
 
-        return new ResponseEntity<>(service.classify(instances), HttpStatus.OK);
+            return new ResponseEntity<>(service.classify(instances), HttpStatus.OK);
+        } catch( Exception ex ) {
+            String error = "Unabled to classify the instances!";
+            log.error(error, ex);
+            return new ResponseEntity<>(instances, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(value = "/contribute", method = RequestMethod.POST)
     public ResponseEntity contribute( @RequestBody List<RuleModelInstance> instances ) {
         try {
-            service.saveInstances(instances);
+            service.updateTrainingData(instances);
             log.trace("Instances saved");
             service.updateModel();
             log.trace("Model updated");

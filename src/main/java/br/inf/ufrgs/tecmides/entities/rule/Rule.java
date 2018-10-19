@@ -19,7 +19,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
 @Entity
-public class Rule extends AuditModel implements Matchable {
+public class Rule extends AuditModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -114,23 +114,7 @@ public class Rule extends AuditModel implements Matchable {
             }
         }
     }
-
-    @Override
-    @JsonIgnore
-    public Map<String, String> getMatchableProperties() {
-        Map<String, String> map = new HashMap<>();
-
-        for( RuleOperand operand : this.antecedentOperands ) {
-            map.put(operand.getName(), operand.getValue());
-        }
-
-        for( RuleOperand operand : this.consequentOperands ) {
-            map.put(operand.getName(), operand.getValue());
-        }
-
-        return map;
-    }
-
+    
     public Long getId() {
         return id;
     }

@@ -6,14 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import br.inf.ufrgs.tecmides.entities.ModelInstance;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import weka.core.Attribute;
 
 @Entity
-public class TreeModelInstance extends AuditModel implements ModelInstance {
+public class TreeModelInstance extends AuditModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -148,30 +143,8 @@ public class TreeModelInstance extends AuditModel implements ModelInstance {
     public String getApproved() {
         return approved;
     }
-
-    public static List<Attribute> getAttributes() {
-        String[] quartiles = {"low", "medium", "medium-high", "high"};
-
-        List<Attribute> attributes = new ArrayList<>();
-        attributes.add(new Attribute("q_assign_view", new ArrayList<>(Arrays.asList(quartiles))));
-        attributes.add(new Attribute("q_assign_submit", new ArrayList<>(Arrays.asList(quartiles))));
-        attributes.add(new Attribute("q_forum_create", new ArrayList<>(Arrays.asList(quartiles))));
-        attributes.add(new Attribute("q_forum_group_access", new ArrayList<>(Arrays.asList(quartiles))));
-        attributes.add(new Attribute("q_forum_discussion_access", new ArrayList<>(Arrays.asList(quartiles))));
-        attributes.add(new Attribute("q_resource_view", new ArrayList<>(Arrays.asList(quartiles))));
-
-        return attributes;
+    
+    public void setApproved(String approved) {
+        this.approved = approved;
     }
-
-    public static Attribute getClassificaitonAttribute() {
-        String[] approvedValues = {"no", "yes"};
-
-        return new Attribute("approved", new ArrayList<>(Arrays.asList(approvedValues)));
-    }
-
-    @Override
-    public void setClassification( double classification ) {
-        this.approved = TreeModelInstance.getClassificaitonAttribute().value((int) classification);
-    }
-
 }
