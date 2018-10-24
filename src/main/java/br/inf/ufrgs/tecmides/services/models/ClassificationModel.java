@@ -12,6 +12,6 @@ public interface ClassificationModel {
     
     public void save() throws Exception;
 
-    public void restore() throws IOException, Exception;
+    public boolean restore() throws IOException, Exception;
 
 }

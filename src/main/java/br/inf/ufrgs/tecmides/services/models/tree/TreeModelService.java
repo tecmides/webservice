@@ -34,7 +34,11 @@ public class TreeModelService implements ModelService<TreeModelInstance> {
     @Override
     public List<TreeModelInstance> classify( List<TreeModelInstance> instances ) throws Exception {
         ModelDataset dataset = datasetFactory.create("classifiable", this.instanceService.getModelInstanceAttributes(), this.instanceService.getModelInstanceClassificaitonAttribute(), instances);
-        model.restore();
+        if(!model.restore())
+        {
+            this.updateModel();
+        }
+        
         model.classify(instanceService, dataset);
         
         return dataset.getModelInstances();

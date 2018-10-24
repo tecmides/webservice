@@ -39,12 +39,12 @@ public class ClassificationModelFactory {
         }
 
         @Override
-        public void restore() throws IOException, Exception {
+        public boolean restore() throws IOException, Exception {
             ClassLoader classLoader = getClass().getClassLoader();
             String basePath = classLoader.getResource(".").getPath() + "/models";
             new File(basePath).mkdirs();
 
-            this.tool.restore(basePath + "/" + this.name + ".model");
+            return this.tool.restore(basePath + "/" + this.name + ".model");
         }
 
         @Override

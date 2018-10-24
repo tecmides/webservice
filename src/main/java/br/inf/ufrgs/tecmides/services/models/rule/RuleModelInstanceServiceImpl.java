@@ -47,7 +47,7 @@ public class RuleModelInstanceServiceImpl implements RuleModelInstanceService {
     
     @Override
     public List<Attribute> getModelInstanceAttributes() {
-        String[] grades = {"A", "B", "C", "D", "E", "F"};
+        String[] grades = {"A", "B", "C", "D", "F"};
         String[] quartiles = {"low", "medium", "medium-high", "high"};
         String[] recurrency = {"never", "rarely", "sometimes", "often", "always"};
         String[] state = {"satisfied", "dissatisfied", "discouraged", "animated", "other", "none"};

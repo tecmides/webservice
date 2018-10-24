@@ -44,12 +44,16 @@ public class J48Classification implements ClassificationTool {
     }
 
     @Override
-    public void restore(String path) throws Exception {
+    public boolean restore(String path) throws Exception {
         File file = new File(path);
         
         if( file.exists() ) {
             this.setClassifier((Classifier) SerializationHelper.read(file.getAbsolutePath()));
+            
+            return true;
         }
+        
+        return false;
     }
 
 }

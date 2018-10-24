@@ -11,6 +11,6 @@ public interface ClassificationTool {
     
     public void save(String path) throws Exception;
     
-    public void restore(String path) throws Exception;
+    public boolean restore(String path) throws Exception;
 
 }
